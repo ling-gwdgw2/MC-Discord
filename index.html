@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MC Discord | Hatsune Miku Hub</title>
+    <meta name="description"
+        content="Welcome to the MC Discord server! The ultimate community hub for Minecraft and Anime lovers. Check channels, active members, and join the server.">
+    <!-- Google Fonts ฟอนต์ที่ใช้จาก Google -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;700;800&family=Outfit:wght@400;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap"
+        rel="stylesheet">
+    <!-- FontAwesome for Icons (Deferred Async Loading) ไอคอนระบบ FontAwesome (โหลดแบบดีเฟอร์บีบประสิทธิผล) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+        media="print" onload="this.media='all'">
+    <!-- Main Style Sheet สไตล์ชีทหลักของระบบ -->
+    <link rel="stylesheet" href="style.css?v=2">
+</head>
+
+<body>
+    <!-- Skip to Content Link ลิงก์สำหรับข้ามไปยังเนื้อหาหลัก (ช่วยการเข้าถึง) -->
+    <a href="#main-content" class="skip-link">Skip to Content</a>
+
+    <div class="app-container">
+        <!-- Navigation Header แถบหัวเว็บและเมนูนำทางหลัก -->
+        <header class="main-header">
+            <a href="index.html" class="header-logo">
+                <img src="assets/miku_chibi_wave.webp" alt="Miku Logo" class="logo-img">
+                <span class="logo-text">MC Discord</span>
+            </a>
+
+            <nav class="main-nav">
+                <a href="gallery.html" class="nav-link" id="nav-post-link">
+                    <i class="fa-solid fa-images nav-icon"></i>
+                    <span class="nav-text">Gallery</span>
+                </a>
+                <a href="index.html" class="nav-link active" id="nav-home-link">
+                    <i class="fa-solid fa-house nav-icon"></i>
+                    <span class="nav-text">Home</span>
+                </a>
+                <a href="#" class="nav-link" id="nav-members-link">
+                    <i class="fa-solid fa-users nav-icon"></i>
+                    <span class="nav-text">Member</span>
+                </a>
+            </nav>
+
+            <div class="header-actions">
+                <button class="nav-icon-btn add-btn" id="nav-create-post-btn" title="Share Your Moments" aria-label="Share Your Moments">
+                    <i class="fa-solid fa-plus"></i>
+                </button>
+                <button class="nav-icon-btn profile-btn" id="nav-profile-btn" title="My Profile" aria-label="My Profile">
+                    <i class="fa-regular fa-user"></i>
+                </button>
+                <div id="header-auth-controls">
+                    <button class="btn btn-solid login-btn" id="header-login-btn">Log in</button>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Workspace พื้นที่ทำงานหลัก -->
+        <main class="main-content" id="main-content">
+            <!-- Home Section ส่วนหน้าโฮมเพจหลัก -->
+            <div id="home-section">
+                <!-- Hero Banner แบนเนอร์ต้อนรับหลักด้านบน -->
+                <section class="hero-banner">
+                    <div class="banner-content">
+                        <h1 class="server-title" id="discord-server-name">MC Guild</h1>
+                        <p class="server-desc">
+                            Connect with fellow gamers, check real-time channels, active voice sessions, and participate
+                            in
+                            special guild events. Welcome to our gaming community!
+                        </p>
+                        <a href="https://discord.com/invite/7C6tstPc" target="_blank"
+                            class="read-more-btn discord-invite-link">
+                            Join Discord <i class="fa-solid fa-arrow-right-long"></i>
+                        </a>
+                    </div>
+
+                    <!-- Bottom slider dots จุดเลื่อนสไลด์ด้านล่าง -->
+                    <div class="banner-slider-dots">
+                        <span class="dot active"></span>
+                        <span class="dot"></span>
+                        <span class="dot"></span>
+                    </div>
+
+                    <!-- Overlapping Character Image ตัวการ์ตูน Miku ซ้อนพ้นขอบแบนเนอร์ -->
+                    <div class="hero-character-wrapper">
+                        <img src="assets/miku_heart_banner.webp" alt="Hatsune Miku Heart Sign" class="hero-character">
+                    </div>
+                </section>
+
+                <!-- Bottom Three-Column Grid ส่วนกริดสามคอลัมน์ด้านล่าง -->
+                <section class="dashboard-grid">
+
+                    <!-- Column 1: Artwork / Gallery คอลัมน์ที่ 1: ตารางผลงานสกินสไตล์ Pinterest -->
+                    <div class="grid-column col-artwork">
+                        <div class="column-header">
+                            <h2>Artwork &gt;</h2>
+                        </div>
+
+                        <div class="artwork-slider">
+                            <div class="artwork-track" id="slider-track">
+                                <!-- Card 1 -->
+                                <div class="artwork-card">
+                                    <div class="card-img-wrapper">
+                                        <img src="assets/artwork_miku_1.webp" alt="Miku Portrait 1">
+                                    </div>
+                                    <div class="artwork-author">by @senzxc</div>
+                                </div>
+                                <!-- Card 2 -->
+                                <div class="artwork-card">
+                                    <div class="card-img-wrapper">
+                                        <img src="assets/artwork_miku_2.webp" alt="Miku Portrait 2">
+                                    </div>
+                                    <div class="artwork-author">by @LING</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="slider-controls">
+                            <button class="slider-arrow prev-arrow" aria-label="Previous Slide">
+                                <i class="fa-solid fa-chevron-left"></i>
+                            </button>
+                            <button class="view-more-btn">View More</button>
+                            <button class="slider-arrow next-arrow" aria-label="Next Slide">
+                                <i class="fa-solid fa-chevron-right"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Column 2: Recent Channels & Stickers คอลัมน์ที่ 2: ช่องแชทที่เปิดล่าสุดและสติกเกอร์ -->
+                    <div class="grid-column col-channels">
+                        <div class="column-header">
+                            <h2>Recent Channels</h2>
+                        </div>
+
+                        <div class="channel-layout">
+                            <!-- Channel search pills (styled matching the image's vertical stack) ช่องแชท Discord ในแนวตั้ง -->
+                            <div class="channels-list" id="discord-channels-container">
+                                <div class="channel-pill style-1">
+                                    <span class="search-icon"><i class="fa-solid fa-magnifying-glass"></i></span>
+                                    <span class="channel-name">Game</span>
+                                </div>
+                                <div class="channel-pill style-2">
+                                    <span class="search-icon"><i class="fa-solid fa-magnifying-glass"></i></span>
+                                    <span class="channel-name">LIVE Patch Update</span>
+                                </div>
+                                <div class="channel-pill style-3">
+                                    <span class="search-icon"><i class="fa-solid fa-magnifying-glass"></i></span>
+                                    <span class="channel-name">Minecraft server</span>
+                                </div>
+                                <div class="channel-pill style-4">
+                                    <span class="search-icon"><i class="fa-solid fa-magnifying-glass"></i></span>
+                                    <span class="channel-name"># General Chat</span>
+                                </div>
+                                <div class="channel-pill style-5">
+                                    <span class="search-icon"><i class="fa-solid fa-magnifying-glass"></i></span>
+                                    <span class="channel-name"># Community Feed</span>
+                                </div>
+                            </div>
+
+                            <!-- Chibi Stickers (absolute positioned list or flex next to pills) สติกเกอร์ตัวการ์ตูน Miku ชิบิ -->
+                            <div class="stickers-container">
+                                <!-- Sticker 1 -->
+                                <div class="sticker-card" id="sticker-wave">
+                                    <button class="close-btn" title="Close">
+                                        <i class="fa-solid fa-xmark"></i>
+                                    </button>
+                                    <div class="sticker-img-wrapper">
+                                        <img src="assets/miku_chibi_wave.webp" alt="Chibi Miku Wave">
+                                    </div>
+                                </div>
+
+                                <!-- Sticker 2 -->
+                                <div class="sticker-card" id="sticker-wink">
+                                    <button class="close-btn" title="Close">
+                                        <i class="fa-solid fa-xmark"></i>
+                                    </button>
+                                    <div class="sticker-img-wrapper">
+                                        <img src="assets/miku_chibi_wink.webp" alt="Chibi Miku Wink">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Column 3: Live Members Stats คอลัมน์ที่ 3: สถิติเซิร์ฟเวอร์ Discord และฟีเจอร์เด่น -->
+                    <div class="grid-column col-features">
+                        <!-- Feature Card 1 -->
+                        <div class="feature-card animate-float-slow">
+                            <div class="feature-num-wrapper">
+                                <span class="feature-num">01</span>
+                            </div>
+                            <div class="feature-body">
+                                <h3 class="feature-title">Online Members</h3>
+                                <p class="feature-text" id="discord-online-count">Loading status...</p>
+                                <!-- Online status list indicators -->
+                                <div class="members-avatar-row" id="members-list-container">
+                                    <!-- Members will be populated here -->
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Feature Card 2 -->
+                        <div class="feature-card animate-float-medium">
+                            <div class="feature-icon-wrapper circle-miku">
+                                <img src="assets/miku_chibi_wave.webp" alt="Miku circular icon"
+                                    class="feature-circle-img">
+                            </div>
+                            <div class="feature-body">
+                                <h3 class="feature-title">Game & developer</h3>
+                                <p class="feature-text">Our community includes people who enjoy both gaming and website
+                                    development.</p>
+                            </div>
+                        </div>
+
+                        <!-- Feature Card 3 -->
+                        <a href="https://www.curseforge.com/minecraft/modpacks/garden-of-dreams" target="_blank"
+                            class="feature-card-link">
+                            <div class="feature-card animate-float-fast">
+                                <div class="feature-icon-wrapper music-notes">
+                                    <img src="assets/logo_02.webp" alt="Garden of Dreams Logo"
+                                        class="feature-circle-img">
+                                </div>
+                                <div class="feature-body">
+                                    <h3 class="feature-title">Garden Of Dreams <i
+                                            class="fa-solid fa-arrow-up-right-from-square"
+                                            style="font-size: 11px; margin-left: 4px; opacity: 0.7;"></i></h3>
+                                    <p class="feature-text">Garden of Dreams is a mod pack designed for players who want
+                                        to experience Minecraft like never before. It seamlessly blends magic, technology, and epic adventure.</p>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+
+                </section>
+            </div> <!-- End of #home-section -->
+
+
+        </main>
+    </div>
+
+    <!-- Members Modal Overlay หน้าต่างป็อปอัปแสดงรายชื่อสมาชิกออนไลน์ -->
+    <div class="modal-overlay" id="members-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Online Members</h2>
+                <button class="modal-close-btn" id="modal-close-btn" aria-label="Close Modal">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+            <div class="modal-search-wrapper">
+                <i class="fa-solid fa-magnifying-glass search-modal-icon"></i>
+                <input type="text" id="member-search-input" placeholder="Search members...">
+            </div>
+            <div class="modal-body" id="modal-members-list">
+                <!-- Members will be dynamically rendered here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Authentication Modal Overlay หน้าต่างป็อปอัปสำหรับการเข้าสู่ระบบและสมัครสมาชิก -->
+    <div class="modal-overlay" id="auth-modal">
+        <div class="modal-content auth-card">
+            <div class="modal-header">
+                <div class="auth-tabs">
+                    <button class="auth-tab active" id="tab-login">Log In</button>
+                    <button class="auth-tab" id="tab-signup">Sign Up</button>
+                </div>
+                <button class="modal-close-btn" id="auth-close-btn" aria-label="Close Modal">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+
+            <div class="modal-body auth-body">
+                <!-- Status/Error Message Container -->
+                <div class="auth-alert" id="auth-alert" style="display: none;"></div>
+
+                <!-- Email/Password Auth Form -->
+                <form id="auth-form">
+                    <!-- Display Name Field (Sign Up Only) -->
+                    <div class="form-group" id="form-group-name" style="display: none;">
+                        <label for="auth-name">Display Name</label>
+                        <div class="input-wrapper">
+                            <i class="fa-regular fa-user input-icon"></i>
+                            <input type="text" id="auth-name" placeholder="Hatsune Miku">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="auth-email">Email Address</label>
+                        <div class="input-wrapper">
+                            <i class="fa-regular fa-envelope input-icon"></i>
+                            <input type="email" id="auth-email" placeholder="miku@vocaloid.com" required>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="auth-password">Password</label>
+                        <div class="input-wrapper">
+                            <i class="fa-solid fa-lock input-icon"></i>
+                            <input type="password" id="auth-password" placeholder="••••••••" required>
+                        </div>
+                    </div>
+
+                    <!-- Submit button -->
+                    <button type="submit" class="btn btn-solid auth-submit-btn" id="auth-submit-btn">
+                        Log In <i class="fa-solid fa-arrow-right-to-bracket" style="margin-left: 6px;"></i>
+                    </button>
+                </form>
+
+                <div class="auth-forgot-row" id="auth-forgot-row">
+                    <a href="#" class="auth-link" id="auth-forgot-link">Forgot Password?</a>
+                </div>
+
+                <div class="auth-separator">
+                    <span>or continue with</span>
+                </div>
+
+                <!-- Third party providers -->
+                <button class="btn btn-outline google-auth-btn" id="auth-google-btn">
+                    <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/action/google.svg" alt="Google Logo"
+                        class="google-icon">
+                    Sign in with Google
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Firebase SDK (v10 compat) ไลบรารี Firebase SDK สำหรับเชื่อมระบบฐานข้อมูลและสิทธิ์ -->
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+
+    <!-- Live Script สคริปต์หลักสำหรับการเชื่อมต่อหน้าโฮมเพจ -->
+    <script src="common.js"></script>
+    <script src="app.js"></script>
+</body>
+
+</html>

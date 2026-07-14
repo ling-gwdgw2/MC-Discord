@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MC Discord | Hatsune Miku Hub</title>
+    <meta name="description"
+        content="Welcome to the MC Discord server! The ultimate community hub for Minecraft and Anime lovers. Check channels, active members, and join the server.">
+    <!-- Google Fonts ฟอนต์ที่ใช้จาก Google -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;700;800&family=Outfit:wght@400;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap"
+        rel="stylesheet">
+    <!-- FontAwesome for Icons (Deferred Async Loading) ไอคอนระบบ FontAwesome (โหลดแบบดีเฟอร์บีบประสิทธิผล) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+        media="print" onload="this.media='all'">
+    <!-- Main Style Sheets สไตล์ชีทหลักของระบบ -->
+    <link rel="stylesheet" href="style.css?v=2">
+    <link rel="stylesheet" href="gallery.css?v=20260706i">
+</head>
+
+<body>
+    <!-- Skip to Content Link ลิงก์สำหรับข้ามไปยังเนื้อหาหลัก (ช่วยการเข้าถึง) -->
+    <a href="#main-content" class="skip-link">Skip to Content</a>
+
+    <div class="app-container">
+        <!-- Navigation Header แถบหัวเว็บและเมนูนำทางหลัก -->
+        <header class="main-header">
+            <div class="header-logo-search">
+                <a href="index.html" class="header-logo">
+                    <img src="assets/miku_chibi_wave.webp" alt="Miku Logo" class="logo-img">
+                    <span class="logo-text">MC Discord</span>
+                </a>
+                <!-- แถบค้นหาภาพภายในแถบหัวเว็บหลัก -->
+                <div class="search-box-wrapper header-search-box">
+                    <i class="fa-solid fa-magnifying-glass search-icon"></i>
+                    <input type="text" id="gallery-search-input" placeholder="ค้นหาภาพ หรือคำอธิบาย...">
+                </div>
+            </div>
+
+            <nav class="main-nav">
+                <a href="gallery.html" class="nav-link active" id="nav-post-link">
+                    <i class="fa-solid fa-images nav-icon"></i>
+                    <span class="nav-text">Gallery</span>
+                </a>
+                <a href="index.html" class="nav-link" id="nav-home-link">
+                    <i class="fa-solid fa-house nav-icon"></i>
+                    <span class="nav-text">Home</span>
+                </a>
+                <a href="#" class="nav-link" id="nav-members-link">
+                    <i class="fa-solid fa-users nav-icon"></i>
+                    <span class="nav-text">Member</span>
+                </a>
+            </nav>
+
+            <div class="header-actions">
+                <button class="nav-icon-btn add-btn" id="nav-create-post-btn" title="Share Your Moments" aria-label="Share Your Moments">
+                    <i class="fa-solid fa-plus"></i>
+                </button>
+                <div class="notification-wrapper" style="position: relative; display: inline-block;">
+                    <button class="nav-icon-btn notification-btn" id="nav-notification-btn" title="Notifications" aria-label="Notifications">
+                        <i class="fa-regular fa-bell"></i>
+                        <span class="notification-badge" id="notification-unread-badge" style="display: none; position: absolute; top: -2px; right: -2px; background: var(--accent-pink-contrast); color: white; border-radius: 50%; padding: 2px 6px; font-size: 10px; font-weight: bold; line-height: 1;">0</span>
+                    </button>
+                    <!-- Dropdown รายการแจ้งเตือนสไตล์ Miku -->
+                    <div class="notification-dropdown" id="notification-dropdown" style="display: none; position: absolute; top: 120%; right: 0; width: 320px; background: white; border: 1.5px solid var(--ui-dark); border-radius: 16px; box-shadow: 0.3em 0.3em 0 var(--ui-dark); z-index: 1000; font-family: var(--font-primary), sans-serif;">
+                        <div class="notification-dropdown-header" style="display: flex; justify-content: space-between; align-items: center; padding: 12px 16px; border-bottom: 1.5px solid #efefef; font-weight: 700; color: var(--ui-dark);">
+                            <span>การแจ้งเตือน 🌸</span>
+                            <button id="btn-mark-notifications-read" style="background: none; border: none; color: var(--primary-cyan); font-size: 12px; cursor: pointer; font-weight: 600;">อ่านทั้งหมด</button>
+                        </div>
+                        <div class="notification-dropdown-list" id="notification-dropdown-list" style="max-height: 280px; overflow-y: auto; padding: 8px 0;">
+                            <div style="padding: 16px; text-align: center; color: #888; font-style: italic;">ไม่มีการแจ้งเตือนใหม่ในขณะนี้</div>
+                        </div>
+                    </div>
+                </div>
+                <button class="nav-icon-btn profile-btn" id="nav-profile-btn" title="My Profile" aria-label="My Profile">
+                    <i class="fa-regular fa-user"></i>
+                </button>
+                <div id="header-auth-controls">
+                    <button class="btn btn-solid login-btn" id="header-login-btn">Log in</button>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Workspace พื้นที่ทำงานหลัก -->
+        <main class="main-content" id="main-content">
+
+
+            <!-- Create Post Section (initially hidden) ส่วนสร้างโพสต์รูปภาพใหม่ (เริ่มต้นถูกซ่อนไว้) -->
+            <section class="post-section" id="create-post-section" style="display: none;">
+                <div class="post-container animate-fade-in">
+                    <!-- Back Link ลิงก์สำหรับย้อนกลับไปหน้าหลัก -->
+                    <a href="#" class="back-link" id="create-post-back-btn"><i class="fa-solid fa-arrow-left"></i> Back
+                        to Gallery</a>
+
+                    <!-- Post Creator Form ฟอร์มสร้างโพสต์ผลงานชิ้นใหม่ -->
+                    <div class="post-creator-card">
+                        <h2 class="creator-title"><i class="fa-regular fa-image"
+                                style="color: var(--primary-cyan); margin-right: 8px;"></i> Share Your Moments</h2>
+                        <form id="post-form">
+                            <div class="form-group">
+                                <label for="post-caption">Caption (ชื่อรูปภาพ)</label>
+                                <input type="text" id="post-caption" placeholder="Give your photo a title..." required>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="post-description">Description (คำอธิบายรูปภาพ)</label>
+                                <textarea id="post-description" rows="3" placeholder="Write a detailed description for your photo..."></textarea>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="post-visibility">Visibility & Downloads (สถานะสิทธิ์การเผยแพร่และดาวน์โหลด)</label>
+                                <select id="post-visibility" class="visibility-select" required>
+                                    <option value="public-download">สาธารณะ (เปิดให้คนโหลดรูปภาพได้)</option>
+                                    <option value="public-nodownload">สาธารณะ (แต่ไม่อนุญาตให้ผู้อื่นดาวน์โหลด)</option>
+                                    <option value="private">แกลเลอรีส่วนตัว (เห็นเฉพาะฉันคนเดียว)</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Photo Upload</label>
+                                <div class="dropzone-area" id="dropzone-area">
+                                    <input type="file" id="post-file" accept="image/*,image/gif"
+                                        class="file-hidden-input" required>
+                                    <div class="dropzone-content">
+                                        <i class="fa-solid fa-cloud-arrow-up dropzone-icon"></i>
+                                        <p class="dropzone-text">Drag & drop your image here or <span>browse</span></p>
+                                        <p class="dropzone-hint">Supports JPEG, PNG, WEBP (Max 5MB)</p>
+                                    </div>
+                                    <div class="dropzone-preview-container" id="dropzone-preview-container"
+                                        style="display: none;">
+                                        <img src="" alt="Selected Preview" class="dropzone-preview-img"
+                                            id="dropzone-preview-img">
+                                        <button type="button" class="dropzone-remove-btn" id="dropzone-remove-btn">
+                                            <i class="fa-solid fa-trash-can"></i> Remove
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <button type="submit" class="creator-submit-btn" id="post-submit-btn">
+                                <svg
+                                  xmlns="http://www.w3.org/2000/svg"
+                                  viewBox="0 0 36 36"
+                                  width="36px"
+                                  height="36px"
+                                >
+                                  <rect width="36" height="36" x="0" y="0" fill="#fdd835"></rect>
+                                  <path
+                                    fill="#e53935"
+                                    d="M38.67,42H11.52C11.27,40.62,11,38.57,11,36c0-5,0-11,0-11s1.44-7.39,3.22-9.59 c1.67-2.06,2.76-3.48,6.78-4.41c3-0.7,7.13-0.23,9,1c2.15,1.42,3.37,6.67,3.81,11.29c1.49-0.3,5.21,0.2,5.5,1.28 C40.89,30.29,39.48,38.31,38.67,42z"
+                                  ></path>
+                                  <path
+                                    fill="#b71c1c"
+                                    d="M39.02,42H11.99c-0.22-2.67-0.48-7.05-0.49-12.72c0.83,4.18,1.63,9.59,6.98,9.79 c3.48,0.12,8.27,0.55,9.83-2.45c1.57-3,3.72-8.95,3.51-15.62c-0.19-5.84-1.75-8.2-2.13-8.7c0.59,0.66,3.74,4.49,4.01,11.7 c0.03,0.83,0.06,1.72,0.08,2.66c4.21-0.15,5.93,1.5,6.07,2.35C40.68,33.85,39.8,38.9,39.02,42z"
+                                  ></path>
+                                  <path
+                                    fill="#212121"
+                                    d="M35,27.17c0,3.67-0.28,11.2-0.42,14.83h-2C32.72,38.42,33,30.83,33,27.17 c0-5.54-1.46-12.65-3.55-14.02c-1.65-1.08-5.49-1.48-8.23-0.85c-3.62,0.83-4.57,1.99-6.14,3.92L15,16.32 c-1.31,1.6-2.59,6.92-3,8.96v10.8c0,2.58,0.28,4.61,0.54,5.92H10.5c-0.25-1.41-0.5-3.42-0.5-5.92l0.02-11.09 c0.15-0.77,1.55-7.63,3.43-9.94l0.08-0.09c1.65-2.03,2.96-3.63,7.25-4.61c3.28-0.76,7.67-0.25,9.77,1.13 C33.79,13.6,35,22.23,35,27.17z"
+                                  ></path>
+                                  <path
+                                    fill="#01579b"
+                                    d="M17.165,17.283c5.217-0.055,9.391,0.283,9,6.011c-0.391,5.728-8.478,5.533-9.391,5.337 c-0.913-0.196-7.826-0.043-7.696-5.337C9.209,18,13.645,17.32,17.165,17.283z"
+                                  ></path>
+                                  <path
+                                    fill="#212121"
+                                    d="M40.739,37.38c-0.28,1.99-0.69,3.53-1.22,4.62h-2.43c0.25-0.19,1.13-1.11,1.67-4.9 c0.57-4-0.23-11.79-0.93-12.78c-0.4-0.4-2.63-0.8-4.37-0.89l0.1-1.99c1.04,0.05,4.53,0.31,5.71,1.49 C40.689,24.36,41.289,33.53,40.739,37.38z"
+                                  ></path>
+                                  <path
+                                    fill="#81d4fa"
+                                    d="M10.154,20.201c0.261,2.059-0.196,3.351,2.543,3.546s8.076,1.022,9.402-0.554 c1.326-1.576,1.75-4.365-0.891-5.267C19.336,17.287,12.959,16.251,10.154,20.201z"
+                                  ></path>
+                                  <path
+                                    fill="#212121"
+                                    d="M17.615,29.677c-0.502,0-0.873-0.03-1.052-0.069c-0.086-0.019-0.236-0.035-0.434-0.06 c-5.344-0.679-8.053-2.784-8.052-6.255c0.001-2.698,1.17-7.238,8.986-7.32l0.181-0.002c3.444-0.038,6.414-0.068,8.272,1.818 c1.173,1.191,1.712,3,1.647,5.53c-0.044,1.688-0.785,3.147-2.144,4.217C22.785,29.296,19.388,29.677,17.615,29.677z M17.086,17.973 c-7.006,0.074-7.008,4.023-7.008,5.321c-0.001,3.109,3.598,3.926,6.305,4.27c0.273,0.035,0.48,0.063,0.601,0.089 c0.563,0.101,4.68,0.035,6.855-1.732c0.865-0.702,1.299-1.57,1.326-2.653c0.051-1.958-0.301-3.291-1.073-4.075 c-1.262-1.281-3.834-1.255-6.825-1.222L17.086,17.973z"
+                                  ></path>
+                                  <path
+                                    fill="#e1f5fe"
+                                    d="M15.078,19.043c1.957-0.326,5.122-0.529,4.435,1.304c-0.489,1.304-7.185,2.185-7.185,0.652 C12.328,19.467,15.078,19.043,15.078,19.043z"
+                                  ></path>
+                                </svg>
+                                <span class="now">now!</span>
+                                <span class="play">Post Photo</span>
+                            </button>
+
+                            <!-- Premium Upload Progress Bar แถบแสดงสถานะการอัปโหลดรูปภาพ -->
+                            <div class="upload-progress-container" id="upload-progress-container"
+                                style="display: none;">
+                                <div class="upload-progress-bar" id="upload-progress-bar"></div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Post Section (initially visible) บอร์ดแสดงผลงานภาพแกลเลอรีหลัก -->
+            <section class="post-section" id="post-section" style="display: block;">
+                <div class="post-container animate-fade-in">
+                    <!-- Search and Sort Controls ตัวควบคุมการค้นหาและจัดเรียงข้อมูลโพสต์ -->
+                    <div class="posts-filter-bar">
+                        <!-- Feed Selection Tab เมนูสลับหน้าแสดงผลรูปภาพระหว่างภาพสำรวจทั้งหมดและเฉพาะผู้ใช้งานที่เราติดตาม -->
+                        <div class="feed-toggle-tabs" id="feed-toggle-tabs" style="display: flex; gap: 8px; font-family: var(--font-primary), sans-serif;">
+                            <button class="pinterest-tab-btn active" data-feed="all" id="feed-tab-all" style="padding: 10px 20px; border-radius: 100px; font-weight: 700; border: 1.5px solid var(--ui-dark); font-size: 14px; cursor: pointer; box-shadow: 0.15em 0.15em 0 var(--ui-dark); background: var(--primary-cyan); color: white; transition: all 0.15s ease;">สำรวจ (Explore)</button>
+                            <button class="pinterest-tab-btn" data-feed="following" id="feed-tab-following" style="padding: 10px 20px; border-radius: 100px; font-weight: 700; border: 1.5px solid var(--ui-dark); font-size: 14px; cursor: pointer; box-shadow: 0.15em 0.15em 0 var(--ui-dark); background: #ffffff; color: var(--ui-dark); transition: all 0.15s ease;">กำลังติดตาม (Following)</button>
+                        </div>
+                        <div class="sort-box-wrapper">
+                            <i class="fa-solid fa-arrow-down-wide-short sort-icon"></i>
+                            <select id="gallery-sort-select" aria-label="เรียงลำดับรูปภาพ">
+                                <option value="date">ล่าสุด (Latest)</option>
+                                <option value="likes">ยอดนิยม (Most Liked)</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Post Feed Grid หัวข้อและบอร์ดแกลเลอรีหลัก -->
+                    <div class="posts-feed-header">
+                        <h2><i class="fa-solid fa-images" style="color: var(--primary-cyan); margin-right: 8px;"></i>
+                            Photo Gallery</h2>
+                        <span class="posts-count" id="posts-count">0 posts</span>
+                    </div>
+
+                    <!-- Posts Feed Loader ตัวจำลองการโหลดข้อมูลการ์ดแกลเลอรี (Skeleton Loader) -->
+                    <div class="posts-loader" id="posts-loader">
+                        <div class="skeleton-card">
+                            <div class="skeleton-img"></div>
+                            <div class="skeleton-text short"></div>
+                            <div class="skeleton-text long"></div>
+                        </div>
+                        <div class="skeleton-card">
+                            <div class="skeleton-img height-lg"></div>
+                            <div class="skeleton-text long"></div>
+                            <div class="skeleton-text short"></div>
+                        </div>
+                        <div class="skeleton-card">
+                            <div class="skeleton-img height-sm"></div>
+                            <div class="skeleton-text short"></div>
+                            <div class="skeleton-text short"></div>
+                        </div>
+                    </div>
+
+                    <!-- Feed Empty State บล็อกแสดงเมื่อไม่มีรูปภาพในระบบแกลเลอรี -->
+                    <div class="posts-empty-state" id="posts-empty-state" style="display: none;">
+                        <i class="fa-regular fa-folder-open empty-icon"></i>
+                        <p class="empty-text">No photos shared yet. Be the first to share one!</p>
+                    </div>
+
+                    <!-- Posts Grid บอร์ดแสดงการ์ดผลงานรูปภาพ -->
+                    <div class="posts-grid" id="posts-feed-grid">
+                        <!-- Post cards will be populated dynamically -->
+                    </div>
+
+                    <!-- Infinite Scroll Observer Trigger ตัวดักจับและดึงข้อมูลเพิ่มเมื่อเลื่อนจอลงด้านล่างสุด (Infinite Scroll) -->
+                    <div id="infinite-scroll-trigger" style="height: 10px; margin-top: 20px;"></div>
+                </div>
+            </section>
+
+
+        </main>
+    </div>
+
+    <!-- Members Modal Overlay หน้าต่างป็อปอัปแสดงรายชื่อสมาชิกออนไลน์ -->
+    <div class="modal-overlay" id="members-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Online Members</h2>
+                <button class="modal-close-btn" id="modal-close-btn" aria-label="Close Modal">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+            <div class="modal-search-wrapper">
+                <i class="fa-solid fa-magnifying-glass search-modal-icon"></i>
+                <input type="text" id="member-search-input" placeholder="Search members...">
+            </div>
+            <div class="modal-body" id="modal-members-list">
+                <!-- Members will be dynamically rendered here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Authentication Modal Overlay หน้าต่างป็อปอัปสำหรับการเข้าสู่ระบบและสมัครสมาชิก -->
+    <div class="modal-overlay" id="auth-modal">
+        <div class="modal-content auth-card">
+            <div class="modal-header">
+                <div class="auth-tabs">
+                    <button class="auth-tab active" id="tab-login">Log In</button>
+                    <button class="auth-tab" id="tab-signup">Sign Up</button>
+                </div>
+                <button class="modal-close-btn" id="auth-close-btn" aria-label="Close Modal">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+
+            <div class="modal-body auth-body">
+                <!-- Status/Error Message Container -->
+                <div class="auth-alert" id="auth-alert" style="display: none;"></div>
+
+                <!-- Email/Password Auth Form -->
+                <form id="auth-form">
+                    <!-- Display Name Field (Sign Up Only) -->
+                    <div class="form-group" id="form-group-name" style="display: none;">
+                        <label for="auth-name">Display Name</label>
+                        <div class="input-wrapper">
+                            <i class="fa-regular fa-user input-icon"></i>
+                            <input type="text" id="auth-name" placeholder="Hatsune Miku">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="auth-email">Email Address</label>
+                        <div class="input-wrapper">
+                            <i class="fa-regular fa-envelope input-icon"></i>
+                            <input type="email" id="auth-email" placeholder="miku@vocaloid.com" required>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="auth-password">Password</label>
+                        <div class="input-wrapper">
+                            <i class="fa-solid fa-lock input-icon"></i>
+                            <input type="password" id="auth-password" placeholder="••••••••" required>
+                        </div>
+                    </div>
+
+                    <!-- Submit button -->
+                    <button type="submit" class="btn btn-solid auth-submit-btn" id="auth-submit-btn">
+                        Log In <i class="fa-solid fa-arrow-right-to-bracket" style="margin-left: 6px;"></i>
+                    </button>
+                </form>
+
+                <div class="auth-forgot-row" id="auth-forgot-row">
+                    <a href="#" class="auth-link" id="auth-forgot-link">Forgot Password?</a>
+                </div>
+
+                <div class="auth-separator">
+                    <span>or continue with</span>
+                </div>
+
+                <!-- Third party providers -->
+                <button class="btn btn-outline google-auth-btn" id="auth-google-btn">
+                    <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/action/google.svg" alt="Google Logo"
+                        class="google-icon">
+                    Sign in with Google
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Firebase SDK (v10 compat) ไลบรารี Firebase SDK สำหรับเชื่อมระบบฐานข้อมูลและสิทธิ์ -->
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+
+    <!-- Live Script สคริปต์หลักสำหรับการควบคุมหน้าแกลเลอรี -->
+    <script src="common.js"></script>
+    <script src="gallery.js?v=20260706g"></script>
+</body>
+
+</html>

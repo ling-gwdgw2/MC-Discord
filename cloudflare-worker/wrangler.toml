@@ -1,0 +1,17 @@
+name = "miku-discord-r2-worker"
+main = "index.js"
+compatibility_date = "2023-05-18"
+
+# Bind your R2 bucket. Make sure the name in the dashboard matches.
+[[r2_buckets]]
+binding = "R2_BUCKET"
+bucket_name = "miuku-discord01"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "miku-discord-db"
+database_id = "37e97d2f-5af1-45f5-9691-482f80166006"
+
+[[kv_namespaces]]
+binding = "CACHE"
+id = "9f80890acfac46c39d1d2093fca962a0"

@@ -1,0 +1,1689 @@
+/* Post Feed Section Styling การตกแต่งสไตล์เซกชั่นฟีดโพสต์ผลงาน */
+.post-section {
+    padding: var(--spacing-lg) 0;
+    width: 100%;
+}
+
+/* Expand header on gallery pages to align with the wide masonry grid feed (1820px max-width) ขยายแถบหัวเว็บของแกลเลอรีให้กว้างพอดีกับ masonry grid */
+.main-header {
+    max-width: 1820px !important;
+}
+
+/* Post Section Specific (Gallery) - Full Width ส่วนแสดงแกลเลอรีแบบเต็มความกว้าง */
+#post-section .post-container {
+    max-width: 100%;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-lg);
+    padding: 0 40px;
+}
+
+@media (max-width: 768px) {
+    #post-section .post-container {
+        padding: 0 20px;
+    }
+}
+
+/* Create Post Section Specific - Constrained ส่วนแสดงการสร้างโพสต์แบบบีบความกว้าง */
+#create-post-section .post-container {
+    max-width: 900px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-lg);
+    padding: 0 20px;
+}
+
+/* Post Creator Card การ์ดสร้างผลงานชิ้นใหม่ */
+.post-creator-card {
+    background: #ffffff;
+    border: 1.5px solid var(--bg-page);
+    border-radius: var(--border-radius-lg);
+    box-shadow: var(--shadow-medium);
+    padding: 28px;
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-md);
+}
+
+.creator-title {
+    font-family: var(--font-heading);
+    font-size: 22px;
+    font-weight: 800;
+    color: var(--text-main);
+    display: flex;
+    align-items: center;
+}
+
+#post-form {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+#post-form textarea,
+#post-form input[type="text"],
+#post-form select {
+    width: 100%;
+    border-radius: var(--border-radius-sm);
+    border: 1.5px solid var(--bg-page);
+    background-color: var(--bg-page);
+    padding: 12px 16px;
+    font-family: var(--font-primary);
+    font-size: 15px;
+    color: var(--text-main);
+    outline: none;
+    transition: var(--transition-smooth);
+    box-sizing: border-box;
+}
+
+#post-form textarea {
+    resize: vertical;
+}
+
+#post-form textarea:focus,
+#post-form input[type="text"]:focus,
+#post-form select:focus {
+    border-color: var(--primary-cyan);
+    background-color: #ffffff;
+    box-shadow: 0 0 0 4px rgba(17, 117, 117, 0.1);
+}
+
+/* Dropzone Area พื้นที่โซนสำหรับลากวางไฟล์อัปโหลดรูปภาพ */
+.dropzone-area {
+    width: 100%;
+    min-height: 160px;
+    border: 2px dashed rgba(17, 117, 117, 0.3);
+    border-radius: var(--border-radius-sm);
+    background-color: var(--bg-page);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    padding: 20px;
+    cursor: pointer;
+    transition: var(--transition-smooth);
+}
+
+.dropzone-area:hover,
+.dropzone-area.dragover {
+    border-color: var(--primary-cyan);
+    background-color: rgba(17, 117, 117, 0.03);
+}
+
+.file-hidden-input {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    cursor: pointer;
+    z-index: 10;
+}
+
+.dropzone-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 8px;
+    pointer-events: none;
+}
+
+.dropzone-icon {
+    font-size: 36px;
+    color: var(--text-muted);
+    transition: var(--transition-smooth);
+}
+
+.dropzone-area:hover .dropzone-icon {
+    color: var(--primary-cyan);
+    transform: translateY(-4px);
+}
+
+.dropzone-text {
+    font-family: var(--font-primary);
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--text-main);
+}
+
+.dropzone-text span {
+    color: var(--primary-cyan);
+    text-decoration: underline;
+}
+
+.dropzone-hint {
+    font-size: 12px;
+    color: var(--text-muted);
+}
+
+/* Dropzone Preview State สถานะสำหรับแสดงรูปตัวอย่างที่เลือก */
+.dropzone-preview-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+    z-index: 20;
+    /* Keep it above file-hidden-input for buttons clickability */
+}
+
+.dropzone-preview-img {
+    max-height: 240px;
+    max-width: 100%;
+    object-fit: contain;
+    border-radius: var(--border-radius-sm);
+    border: 1.5px solid var(--bg-page);
+    box-shadow: var(--shadow-soft);
+}
+
+.dropzone-remove-btn {
+    background: none;
+    border: 1.5px solid var(--accent-pink-contrast);
+    background-color: var(--accent-pink);
+    color: var(--accent-pink-contrast);
+    border-radius: var(--border-radius-sm);
+    padding: 6px 14px;
+    font-family: var(--font-primary);
+    font-size: 13px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    cursor: pointer;
+    transition: var(--transition-smooth);
+}
+
+.dropzone-remove-btn:hover {
+    background-color: #ffdce5;
+    transform: translateY(-1px);
+}
+
+.creator-submit-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding: 0 10px;
+    color: white;
+    text-shadow: 2px 2px rgb(116, 116, 116);
+    text-transform: uppercase;
+    cursor: pointer;
+    border: solid 2px black;
+    letter-spacing: 1px;
+    font-weight: 600;
+    font-size: 17px;
+    background-color: hsl(49deg 98% 60%);
+    border-radius: 50px;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.5s ease;
+    width: 100%;
+    height: 48px;
+}
+
+.creator-submit-btn:active {
+    transform: scale(0.9);
+    transition: all 100ms ease;
+}
+
+.creator-submit-btn svg {
+    transition: all 0.5s ease;
+    z-index: 2;
+}
+
+.creator-submit-btn .play {
+    transition: all 0.5s ease;
+    transition-delay: 300ms;
+}
+
+.creator-submit-btn:hover svg {
+    transform: scale(3) translate(50%);
+}
+
+.creator-submit-btn .now {
+    position: absolute;
+    left: 0;
+    transform: translateX(-100%);
+    transition: all 0.5s ease;
+    z-index: 2;
+}
+
+.creator-submit-btn:hover .now {
+    transform: translateX(10px);
+    transition-delay: 300ms;
+}
+
+.creator-submit-btn:hover .play {
+    transform: translateX(200%);
+    transition-delay: 300ms;
+}
+
+.creator-submit-btn:disabled {
+    background-color: var(--text-muted);
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none !important;
+    box-shadow: none !important;
+}
+
+.creator-submit-btn:disabled svg,
+.creator-submit-btn:disabled .now {
+    display: none !important;
+}
+
+.creator-submit-btn:disabled .play {
+    transform: none !important;
+    position: relative !important;
+    left: 0 !important;
+    transition: none !important;
+}
+
+/* Post Feed Header ส่วนหัวเรื่องของฟีดผลงาน */
+.posts-feed-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1.5px solid var(--bg-page);
+    padding-bottom: 12px;
+    margin-top: 12px;
+}
+
+.posts-feed-header h2 {
+    font-family: var(--font-heading);
+    font-size: 22px;
+    font-weight: 800;
+    color: var(--text-main);
+    line-height: 1.4;
+}
+
+.posts-count {
+    font-family: var(--font-primary);
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--text-muted);
+    background-color: var(--bg-page);
+    padding: 4px 12px;
+    border-radius: 20px;
+}
+
+/* Posts Feed States สถานะจำลองการทำงานต่างๆ ของฟีดโพสต์ */
+.posts-loader,
+.posts-empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 60px 20px;
+    text-align: center;
+    background: #ffffff;
+    border-radius: var(--border-radius-lg);
+    border: 1.5px solid var(--bg-page);
+}
+
+.posts-loader {
+    font-family: var(--font-primary);
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--text-muted);
+    gap: 12px;
+}
+
+.posts-loader i {
+    font-size: 24px;
+    color: var(--primary-cyan);
+}
+
+.empty-icon {
+    font-size: 48px;
+    color: var(--text-muted);
+    margin-bottom: 12px;
+}
+
+.empty-text {
+    font-family: var(--font-primary);
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--text-muted);
+}
+
+/* Posts Grid Feed (Pinterest Masonry Layout - JS Driven Columns) ตารางฟีดรูปภาพสไตล์ Pinterest Masonry */
+.posts-grid {
+    display: flex;
+    gap: 20px;
+    width: 100%;
+    max-width: 1820px;
+    margin: 0 auto;
+    align-items: flex-start;
+}
+
+.masonry-col {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    min-width: 0;
+    /* Prevents overflow issues */
+}
+
+.post-card {
+    position: relative;
+    background: transparent;
+    border: none;
+    box-shadow: none;
+    padding: 0;
+    margin-bottom: 0;
+    /* Handled by gap in masonry-col */
+    display: block;
+    width: 100%;
+    border-radius: 16px;
+    overflow: hidden;
+    cursor: pointer;
+    transition: transform 0.2s cubic-bezier(0.25, 0.8, 0.25, 1);
+    animation: slideUpFade 0.4s ease both;
+}
+
+/* --- สไตล์เริ่มต้นของโครงสร้างการ์ดแต่ละใบ (Base Card Styles) --- */
+
+/* ส่วนหัวของการ์ดรูปภาพ (แสดงชื่อผู้ใช้และอวาตาร์) */
+.card-header {
+    position: absolute;
+    top: 12px;
+    left: 12px;
+    right: 12px;
+    z-index: 3;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    display: flex;
+    align-items: center;
+    pointer-events: none;
+}
+
+/* รูปร่างอวาตาร์ผู้โพสต์ */
+.card-avatar {
+    width: 2.2em;
+    height: 2.2em;
+    border-radius: 50%;
+    border: 1.5px solid #ffffff;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    flex-shrink: 0;
+    object-fit: cover;
+}
+
+/* ตัวอักษรย่ออ้างอิงกรณีไม่มีรูปอวาตาร์ */
+.post-author-initials {
+    width: 2.2em;
+    height: 2.2em;
+    border-radius: 50%;
+    background: linear-gradient(45deg, #4cb8b8, #3da3a3);
+    border: 1.5px solid #ffffff;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    flex-shrink: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-family: var(--font-heading);
+    font-size: 12px;
+    font-weight: 800;
+    color: #ffffff;
+}
+
+/* ชื่อบัญชีผู้ใช้งานบนการ์ด */
+.card-username {
+    margin: 0 0 0 8px;
+    font-family: var(--font-primary);
+    font-size: 13px;
+    font-weight: 700;
+    color: #ffffff;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8);
+}
+
+/* กล่องครอบรูปภาพของการ์ดเพื่อคุมขนาดและมุมโค้ง */
+.post-card-img-wrapper {
+    position: relative;
+    overflow: hidden;
+    border-radius: 16px;
+    cursor: zoom-in;
+    margin: 0;
+}
+
+/* แผ่นกรองพื้นหลังไล่สีเข้มด้านหลังข้อความการ์ดทำให้อ่านง่าย */
+.post-card-img-wrapper::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(to bottom, rgba(0, 0, 0, 0.3) 0%, rgba(0, 0, 0, 0) 45%, rgba(0, 0, 0, 0.7) 100%);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+    z-index: 2;
+}
+
+/* รูปภาพหลักบนการ์ดแกลเลอรี */
+.post-card-img {
+    width: 100%;
+    height: auto;
+    display: block;
+    opacity: 0;
+    transition: opacity 0.3s ease-in-out, transform 0.4s ease;
+}
+
+/* คลาสที่จะถูกเติมด้วย JS หลังจากโหลดรูปภาพเสร็จสิ้นเพื่อทำเอฟเฟกต์ Fade-In */
+.post-card-img.loaded {
+    opacity: 1;
+}
+
+/* คำอธิบายรูปภาพ/แคปชั่นด้านล่างการ์ด */
+.card-caption {
+    position: absolute;
+    bottom: 50px;
+    left: 12px;
+    right: 12px;
+    z-index: 3;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    font-family: var(--font-primary);
+    font-size: 13px;
+    font-weight: 600;
+    color: #ffffff !important;
+    margin: 0;
+    pointer-events: none;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8);
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+/* ส่วนล่างของการ์ด (บรรจุแถบไลก์และวันเวลาโพสต์) */
+.card-actions {
+    position: absolute;
+    bottom: 12px;
+    left: 12px;
+    right: 12px;
+    z-index: 3;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    margin: 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* แถบหัวใจไลก์คู่จำนวนตัวเลขนับ */
+.post-card-like-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+/* ปุ่มกดเพื่อไต่ดาวหรือกดถูกใจรูปภาพ */
+.action-button {
+    background: rgba(255, 255, 255, 0.9);
+    border: none;
+    border-radius: 50%;
+    width: 32px;
+    height: 32px;
+    padding: 0;
+    cursor: pointer;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: transform 0.1s ease, background 0.2s ease;
+}
+
+/* PC Hover Effects เอฟเฟกต์การชี้เมาส์สำหรับเครื่องคอมพิวเตอร์ */
+@media (hover: hover) {
+    .post-card:hover {
+        transform: translateY(-4px);
+    }
+
+    .post-card:hover .card-header {
+        opacity: 1;
+    }
+
+    .post-card:hover .post-card-img-wrapper::after {
+        opacity: 1;
+    }
+
+    .post-card:hover .post-card-img {
+        transform: scale(1.02);
+    }
+
+    .post-card:hover .card-caption {
+        opacity: 1;
+    }
+
+    .post-card:hover .card-actions {
+        opacity: 1;
+    }
+
+    .action-button:hover {
+        background: #ffffff;
+        transform: scale(1.05);
+    }
+}
+
+/* Mobile & Touch Devices Optimization การปรับแต่งหน้าจอสำหรับโทรศัพท์มือถือและอุปกรณ์สัมผัส */
+@media (hover: none) {
+
+    /* Make card overlays permanently visible on touch screens to prevent layout shifts and hidden content */
+    .card-header,
+    .card-caption,
+    .card-actions,
+    .post-card-img-wrapper::after {
+        opacity: 1 !important;
+    }
+
+    /* Expand tap targets on mobile for touch accuracy (approx +25%) */
+    .action-button {
+        width: 40px !important;
+        height: 40px !important;
+    }
+
+    .action-button-icon {
+        font-size: 16px !important;
+    }
+
+    .card-username {
+        font-size: 14px !important;
+    }
+
+    .card-caption {
+        font-size: 14px !important;
+        bottom: 58px !important;
+    }
+
+    .card-actions {
+        bottom: 14px !important;
+    }
+}
+
+.action-button:active {
+    transform: scale(0.92);
+}
+
+.like-button {
+    background: rgba(255, 255, 255, 0.9);
+}
+
+.like-button.liked {
+    background: #ff3b30;
+}
+
+.like-button.liked .action-button-icon {
+    color: #ffffff;
+}
+
+.action-button-icon {
+    font-size: 14px;
+    color: #333333;
+    display: block;
+}
+
+.post-card-likes-count {
+    font-family: var(--font-heading);
+    font-size: 13px;
+    font-weight: 700;
+    color: #ffffff;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8);
+}
+
+.post-card-time {
+    font-family: var(--font-primary);
+    font-size: 11px;
+    color: rgba(255, 255, 255, 0.8);
+    font-weight: 500;
+    white-space: nowrap;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+.post-card-delete-btn {
+    background: rgba(255, 59, 48, 0.9);
+    border: none;
+    border-radius: 50%;
+    width: 32px;
+    height: 32px;
+    padding: 0;
+    cursor: pointer;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: transform 0.1s ease, background 0.2s ease;
+}
+
+.post-card-delete-btn:hover {
+    background: #ff3b30;
+    transform: scale(1.05);
+}
+
+.post-card-delete-btn:active {
+    transform: scale(0.95);
+}
+
+.post-card-delete-btn .action-button-icon {
+    color: #ffffff;
+}
+
+/* Animations คีย์เฟรมของเอฟเฟกต์อนิเมชั่น */
+.animate-fade-in {
+    animation: fadeIn 0.4s ease both;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+/* --- Premium Enhancement Features ฟีเจอร์ย่อยเพื่อยกระดับความพรีเมียมของระบบ --- */
+
+/* 1. Pinterest Skeleton Loader styles รูปแบบกล่องตัวอย่างระหว่างรอโหลดข้อมูล */
+.posts-loader {
+    display: none;
+    gap: 20px;
+    width: 100%;
+    align-items: flex-start;
+}
+
+.skeleton-card {
+    background: #ffffff;
+    border: 1.5px solid var(--bg-page);
+    border-radius: var(--border-radius-lg);
+    padding: 16px;
+    margin-bottom: 20px;
+    break-inside: avoid;
+    display: inline-block;
+    width: 100%;
+    box-sizing: border-box;
+    box-shadow: var(--shadow-soft);
+}
+
+.skeleton-img {
+    width: 100%;
+    height: 220px;
+    background: linear-gradient(90deg, #f3f3f3 25%, #e8e8e8 50%, #f3f3f3 75%);
+    background-size: 200% 100%;
+    animation: skeletonPulse 1.5s infinite;
+    border-radius: var(--border-radius-sm);
+    margin-bottom: 12px;
+}
+
+.skeleton-img.height-lg {
+    height: 300px;
+}
+
+.skeleton-img.height-sm {
+    height: 150px;
+}
+
+.skeleton-text {
+    height: 12px;
+    background: linear-gradient(90deg, #f3f3f3 25%, #e8e8e8 50%, #f3f3f3 75%);
+    background-size: 200% 100%;
+    animation: skeletonPulse 1.5s infinite;
+    border-radius: var(--border-radius-xs);
+    margin-bottom: 8px;
+}
+
+.skeleton-text.short {
+    width: 40%;
+}
+
+.skeleton-text.long {
+    width: 80%;
+}
+
+@keyframes skeletonPulse {
+    0% {
+        background-position: 200% 0;
+    }
+
+    100% {
+        background-position: -200% 0;
+    }
+}
+
+/* 3. Miku Confirm Dialog Card styling กล่องแจ้งยืนยันการทำรายการสไตล์ Miku */
+.confirm-card {
+    max-width: 400px !important;
+    background: rgba(255, 255, 255, 0.9) !important;
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1.5px solid rgba(0, 242, 254, 0.3) !important;
+    box-shadow: 0 20px 60px rgba(0, 242, 254, 0.2) !important;
+}
+
+.confirm-body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: 24px 16px !important;
+    gap: 16px;
+}
+
+.confirm-icon {
+    font-size: 48px;
+    color: var(--accent-pink-contrast);
+    filter: drop-shadow(0 0 10px rgba(255, 51, 102, 0.3));
+    animation: pulseIcon 2s infinite alternate;
+}
+
+@keyframes pulseIcon {
+    from {
+        transform: scale(1);
+    }
+
+    to {
+        transform: scale(1.08);
+    }
+}
+
+.confirm-message {
+    font-family: var(--font-primary);
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--text-main);
+    line-height: 1.5;
+}
+
+.confirm-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    padding: 16px 24px;
+    border-top: 1.5px solid var(--bg-page);
+}
+
+/* 4. Fullscreen Image Lightbox Overlay (Pinterest-Style Split Card) หน้าต่างแสดงภาพแบบเต็มหน้าจอพร้อมคอมเมนต์ */
+.lightbox-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.65);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    z-index: 11000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+}
+
+.lightbox-overlay.active {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.lightbox-content-wrapper {
+    background: #ffffff;
+    border-radius: 32px;
+    max-width: 1012px;
+    width: 90%;
+    height: 80vh;
+    max-height: 640px;
+    display: grid;
+    grid-template-columns: 1.1fr 0.9fr;
+    overflow: hidden;
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.25);
+    position: relative;
+    transform: scale(0.9) translateY(20px);
+    transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.lightbox-overlay.active .lightbox-content-wrapper {
+    transform: scale(1) translateY(0);
+}
+
+@media (max-width: 768px) {
+    .lightbox-content-wrapper {
+        grid-template-columns: 1fr;
+        grid-template-rows: auto auto;
+        width: 100% !important;
+        height: 100% !important;
+        max-height: 100vh !important;
+        border-radius: 0 !important;
+        margin: 0 !important;
+        overflow-y: auto;
+    }
+
+    .lightbox-image-container {
+        height: 50vh !important;
+        padding: 12px !important;
+    }
+}
+
+.lightbox-image-container {
+    width: 100%;
+    height: 100%;
+    background: #9ad8eb;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    position: relative;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+.lightbox-img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    display: block;
+    cursor: zoom-in;
+    transition: transform 0.25s ease, transform-origin 0.05s ease;
+}
+
+.lightbox-img.zoomed {
+    transform: scale(2.2);
+    cursor: zoom-out;
+}
+
+.lightbox-fullscreen-btn {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    z-index: 10;
+    background: rgba(255, 255, 255, 0.85);
+    border: none;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    color: #333333;
+    font-size: 18px;
+    transition: transform 0.2s ease, background-color 0.2s ease;
+    backdrop-filter: blur(4px);
+}
+
+.lightbox-fullscreen-btn:hover {
+    transform: scale(1.08);
+    background-color: #ffffff;
+}
+
+.lightbox-image-container:fullscreen {
+    background-color: #000000 !important;
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.lightbox-image-container:fullscreen .lightbox-img {
+    max-width: 100vw;
+    max-height: 100vh;
+    object-fit: contain;
+}
+
+.lightbox-close-btn {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    z-index: 10;
+    background: #ffffff;
+    border: none;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    color: #333333;
+    font-size: 18px;
+    transition: transform 0.2s ease, background-color 0.2s ease;
+}
+
+.lightbox-close-btn:hover {
+    transform: scale(1.08);
+    background-color: #f0f0f0;
+    color: #000000;
+}
+
+.lightbox-details-container {
+    padding: 32px;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    background: #ffffff;
+    overflow-y: auto;
+    box-sizing: border-box;
+}
+
+.lightbox-actions-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+}
+
+.lightbox-left-actions {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+
+.lightbox-icon-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 18px;
+    color: #333333;
+    transition: background 0.2s ease;
+}
+
+.lightbox-icon-btn:hover {
+    background: #f0f0f0;
+}
+
+.lightbox-right-actions {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+
+.lightbox-profile-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 8px 12px;
+    border-radius: 20px;
+    font-size: 14px;
+    font-weight: 600;
+    color: #333333;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.lightbox-profile-btn:hover {
+    background: #f0f0f0;
+}
+
+.lightbox-save-btn {
+  width: 42px;
+  height: 42px;
+  border: 1.5px solid rgb(218, 220, 224);
+  border-radius: 12px;
+  background-color: rgb(255, 255, 255);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  position: relative;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+}
+
+.lightbox-save-btn .svgIcon {
+  fill: rgb(0, 0, 0);
+  height: 0.85em;
+  transition: fill 0.3s ease;
+}
+
+.lightbox-save-btn .icon2 {
+  width: 14px;
+  height: 4px;
+  border-bottom: 2px solid rgb(0, 0, 0);
+  border-left: 2px solid rgb(0, 0, 0);
+  border-right: 2px solid rgb(14, 13, 13);
+  transition: border-color 0.3s ease;
+}
+
+.lightbox-save-btn:hover:not(.disabled) {
+  background-color: rgb(128, 255, 228);
+  transition-duration: 0.3s;
+}
+
+.lightbox-save-btn:hover:not(.disabled) .icon2 {
+  border-bottom: 2px solid rgb(41, 41, 41);
+  border-left: 2px solid rgb(41, 41, 41);
+  border-right: 2px solid rgb(41, 41, 41);
+}
+
+.lightbox-save-btn:hover:not(.disabled) .svgIcon {
+  fill: rgb(41, 41, 41);
+  animation: slide-in-top 1s linear infinite;
+}
+
+.lightbox-save-btn.disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  background-color: #555555;
+  border-color: #666666;
+  box-shadow: none;
+}
+
+.lightbox-save-btn.disabled .svgIcon {
+  fill: #888888;
+}
+
+.lightbox-save-btn.disabled .icon2 {
+  border-color: #888888;
+}
+
+@keyframes slide-in-top {
+  0% {
+    transform: translateY(-10px);
+    opacity: 0;
+  }
+
+  100% {
+    transform: translateY(0px);
+    opacity: 1;
+  }
+}
+
+.lightbox-title {
+    font-family: var(--font-primary);
+    font-size: 28px;
+    font-weight: 700;
+    color: #111111;
+    margin: 0 0 12px 0;
+    line-height: 1.2;
+}
+
+.lightbox-visit-btn {
+    background: #efefef;
+    border: none;
+    border-radius: 24px;
+    color: #111111;
+    font-size: 14px;
+    font-weight: 600;
+    padding: 12px 24px;
+    cursor: pointer;
+    margin-bottom: 24px;
+    align-self: flex-start;
+    transition: background 0.2s ease;
+}
+
+.lightbox-visit-btn:hover {
+    background: #e2e2e2;
+}
+
+.lightbox-section-title {
+    font-family: var(--font-primary);
+    font-size: 16px;
+    font-weight: 700;
+    color: #111111;
+    margin: 0 0 8px 0;
+}
+
+.lightbox-description {
+    font-family: var(--font-primary);
+    font-size: 14px;
+    line-height: 1.5;
+    color: #333333;
+    margin: 0 0 24px 0;
+}
+
+.lightbox-author-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 24px;
+}
+
+.lightbox-author-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.lightbox-author-initials {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: #e0f2f1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-family: var(--font-heading);
+    font-weight: 700;
+    color: #00796b;
+    font-size: 14px;
+}
+
+.lightbox-author-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.lightbox-author-name {
+    font-weight: 600;
+    font-size: 14px;
+    color: #111111;
+}
+
+.lightbox-author-followers {
+    font-size: 12px;
+    color: #5f5f5f;
+}
+
+.lightbox-comments-section {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 24px;
+}
+
+.lightbox-comments-list {
+    flex-grow: 1;
+    min-height: 80px;
+    max-height: 150px;
+    overflow-y: auto;
+    border-top: 1px solid #efefef;
+    padding-top: 12px;
+    font-size: 13px;
+    color: #5f5f5f;
+}
+
+.lightbox-comment-item {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 12px;
+    align-items: flex-start;
+}
+
+.lightbox-comment-avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    object-fit: cover;
+    flex-shrink: 0;
+}
+
+.lightbox-comment-avatar-initials {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background-color: var(--primary-cyan);
+    color: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: 700;
+    flex-shrink: 0;
+}
+
+.lightbox-comment-content {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.lightbox-comment-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+}
+
+.lightbox-comment-author {
+    font-weight: 600;
+    color: #111111;
+    font-size: 13px;
+}
+
+.lightbox-comment-time {
+    font-size: 11px;
+    color: #767676;
+}
+
+.lightbox-comment-text {
+    font-size: 13px;
+    color: #333333;
+    line-height: 1.4;
+    margin: 0;
+    word-break: break-word;
+}
+
+.lightbox-comment-input-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: #f0f0f0;
+    border-radius: 24px;
+    padding: 8px 16px;
+    box-sizing: border-box;
+}
+
+.lightbox-comment-input {
+    border: none;
+    background: transparent;
+    flex-grow: 1;
+    font-size: 14px;
+    color: #111111;
+    outline: none;
+    width: 100%;
+}
+
+.lightbox-comment-input::placeholder {
+    color: #767676;
+}
+
+.lightbox-input-icons {
+    display: flex;
+    gap: 12px;
+    color: #767676;
+    cursor: pointer;
+}
+
+.lightbox-input-icons i:hover {
+    color: #111111;
+}
+
+/* --- Premium Gallery & Profile Styles --- */
+
+/* --- Profile Uploads Card --- */
+.profile-uploads-card {
+    background: none !important;
+    border: none !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+    margin-top: 10px;
+    width: 100%;
+}
+
+.profile-uploads-card .posts-grid {
+    display: block !important;
+    column-count: 3;
+    column-gap: 16px;
+    width: 100%;
+}
+
+@media (max-width: 768px) {
+    .profile-uploads-card .posts-grid {
+        column-count: 2 !important;
+    }
+}
+
+@media (max-width: 500px) {
+    .profile-uploads-card .posts-grid {
+        column-count: 1 !important;
+    }
+}
+
+.profile-uploads-card .post-card {
+    display: inline-block;
+    width: 100%;
+    break-inside: avoid;
+    border-radius: 16px !important;
+    border: none !important;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05) !important;
+    background-color: #ffffff;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    overflow: hidden;
+    margin-bottom: 16px;
+}
+
+.profile-uploads-card .post-card:hover {
+    transform: translateY(-4px) !important;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12) !important;
+}
+
+.profile-uploads-card .post-card-img-wrapper {
+    border-radius: 0;
+    cursor: pointer;
+    background: none !important;
+}
+
+.profile-uploads-card .post-card-img-wrapper::after {
+    display: none !important;
+}
+
+.profile-uploads-card .post-card-img {
+    opacity: 1 !important;
+    display: block;
+    width: 100%;
+    height: auto;
+}
+
+.profile-uploads-card .card-caption {
+    position: static;
+    padding: 8px 12px 12px 12px;
+    font-size: 13px;
+    font-weight: 600;
+    color: #333333;
+    background: #ffffff;
+    margin: 0;
+    text-align: left;
+    display: block;
+    opacity: 1 !important;
+}
+
+/* Load More button ปุ่มกดเพื่อโหลดข้อมูลภาพเพิ่มเติม */
+.load-more-container {
+    display: none !important;
+    justify-content: center;
+    margin: 32px 0 16px 0;
+    width: 100%;
+}
+
+.load-more-btn {
+    padding: 12px 36px !important;
+    font-size: 14px !important;
+    border-radius: 30px !important;
+    font-weight: 700 !important;
+}
+
+/* Profile Section Styles — Pixar Neobrutalism */
+.profile-section {
+    padding: 40px 0;
+    width: 100%;
+}
+
+.profile-container {
+    --ui-cream: #f5f1e8;
+    --ui-dark: #2b353e;
+    --ui-blue: #4cb8b8;
+    --ui-blue-shadow: #3da3a3;
+    --ui-green: #61c470;
+    --ui-green-shadow: #45a253;
+    --ui-red: #e65e5e;
+    --ui-red-shadow: #c14242;
+    --button-press-depth: 0.15em;
+
+    max-width: 800px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    font-family: "Arial Rounded MT Bold", "Helvetica Rounded", var(--font-primary), sans-serif;
+}
+
+
+/* Accessibility Skip Link ลิงก์สำหรับข้ามการนำทางเพื่อเข้าถึงเนื้อหาหลักได้สะดวก */
+.skip-link {
+    position: absolute;
+    top: -100px;
+    left: 16px;
+    background: var(--primary-cyan);
+    color: #ffffff;
+    padding: 10px 20px;
+    z-index: 100000;
+    transition: top 0.2s ease;
+    font-weight: 700;
+    font-family: var(--font-heading);
+    border-radius: 0 0 12px 12px;
+    box-shadow: var(--shadow-strong);
+    text-decoration: none;
+}
+
+.skip-link:focus {
+    top: 0;
+    outline: 2px solid var(--primary-cyan-hover);
+    outline-offset: 2px;
+}
+
+/* Back Link for Create Post section */
+.back-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--primary-cyan);
+    text-decoration: none;
+    font-weight: 600;
+    font-family: var(--font-heading);
+    margin-bottom: 20px;
+    transition: var(--transition-smooth);
+    cursor: pointer;
+}
+
+.back-link:hover {
+    color: var(--primary-cyan-hover);
+    transform: translateX(-4px);
+}
+
+/* Upload Progress Bar แถบแสดงผลเปอร์เซ็นต์ความคืบหน้าในการอัปโหลดไฟล์ */
+.upload-progress-container {
+    width: 100%;
+    height: 6px;
+    background-color: var(--accent-pink);
+    border-radius: 3px;
+    margin-top: 16px;
+    overflow: hidden;
+    box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+.upload-progress-bar {
+    width: 0%;
+    height: 100%;
+    background: linear-gradient(90deg, var(--primary-cyan), #00ffcc);
+    transition: width 0.1s ease;
+    border-radius: 3px;
+}
+
+/* --- Filter Bar & Search Box แถบกล่องตัวกรองและช่องค้นหาผลงาน --- */
+.posts-filter-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+    margin: 20px 0 24px 0;
+    width: 100%;
+}
+
+.search-box-wrapper {
+    position: relative;
+    flex: 1;
+    max-width: 600px;
+}
+
+.search-box-wrapper .search-icon {
+    position: absolute;
+    left: 16px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--text-muted);
+    font-size: 16px;
+    transition: var(--transition-smooth);
+    pointer-events: none;
+}
+
+#gallery-search-input {
+    width: 100%;
+    padding: 12px 16px 12px 44px;
+    border: 1.5px solid rgba(76, 184, 184, 0.15);
+    border-radius: 30px;
+    background: rgba(255, 255, 255, 0.8);
+    color: var(--text-main);
+    font-family: var(--font-primary);
+    font-size: 15px;
+    font-weight: 500;
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    transition: var(--transition-smooth);
+}
+
+#gallery-search-input:focus {
+    outline: none;
+    border-color: var(--primary-cyan);
+    box-shadow: 0 0 10px rgba(76, 184, 184, 0.15);
+    background: #ffffff;
+}
+
+#gallery-search-input:focus+.search-icon {
+    color: var(--primary-cyan);
+}
+
+.sort-box-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.sort-box-wrapper .sort-icon {
+    position: absolute;
+    left: 16px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--primary-cyan);
+    font-size: 14px;
+    pointer-events: none;
+    z-index: 2;
+}
+
+#gallery-sort-select {
+    padding: 12px 30px 12px 40px;
+    border: 1.5px solid rgba(76, 184, 184, 0.15);
+    border-radius: 30px;
+    background: rgba(255, 255, 255, 0.8);
+    color: var(--text-main);
+    font-family: var(--font-heading);
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    appearance: none;
+    -webkit-appearance: none;
+    transition: var(--transition-smooth);
+    padding-right: 28px;
+}
+
+#gallery-sort-select:focus {
+    outline: none;
+    border-color: var(--primary-cyan);
+    background: #ffffff;
+}
+
+/* Custom dropdown indicator for select */
+.sort-box-wrapper::after {
+    content: '\f0d7';
+    font-family: 'Font Awesome 6 Free';
+    font-weight: 900;
+    position: absolute;
+    right: 16px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--text-muted);
+    pointer-events: none;
+}
+
+/* --- Lightbox Navigation Buttons --- ปุ่มกดนำทางเลื่อนภาพถัดไป/ย้อนกลับภายใน Lightbox */
+.lightbox-nav-btn {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 48px;
+    height: 48px;
+    border: none;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.15);
+    color: #ffffff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 20px;
+    cursor: pointer;
+    transition: var(--transition-smooth);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    z-index: 1000;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.lightbox-nav-btn:hover {
+    background: rgba(255, 255, 255, 0.95);
+    color: var(--primary-cyan);
+    transform: translateY(-50%) scale(1.1);
+}
+
+.lightbox-nav-btn:active {
+    transform: translateY(-50%) scale(0.95);
+}
+
+.lightbox-nav-btn.prev-btn {
+    left: -75px;
+}
+
+.lightbox-nav-btn.next-btn {
+    right: -75px;
+}
+
+/* Lightbox Comment Delete Button ปุ่มกดลบความคิดเห็นภายในหน้าต่าง Lightbox */
+.lightbox-comment-delete-btn {
+    background: none;
+    border: none;
+    color: var(--text-muted);
+    cursor: pointer;
+    font-size: 14px;
+    padding: 4px;
+    border-radius: 4px;
+    transition: var(--transition-smooth);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.lightbox-comment-delete-btn:hover {
+    color: var(--accent-pink-contrast);
+    background: rgba(240, 98, 146, 0.1);
+    transform: scale(1.1);
+}
+
+/* Responsive adjustments for Filter bar */
+@media (max-width: 500px) {
+    .posts-filter-bar {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 12px;
+    }
+
+    .sort-box-wrapper,
+    #gallery-sort-select {
+        width: 100%;
+    }
+
+    #gallery-sort-select {
+        width: 100%;
+    }
+
+    .lightbox-nav-btn {
+        display: none !important;
+    }
+
+    .lightbox-close-btn {
+        top: calc(16px + env(safe-area-inset-top)) !important;
+        left: 16px !important;
+    }
+
+    .lightbox-fullscreen-btn {
+        top: calc(16px + env(safe-area-inset-top)) !important;
+        right: 16px !important;
+    }
+}

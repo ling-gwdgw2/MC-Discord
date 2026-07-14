@@ -1,0 +1,22 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /game/boss {
+      allow read: if true;
+      allow write: if request.resource.data.hp is int 
+                   && request.resource.data.hp >= 0 
+                   && request.resource.data.hp <= 100;
+    }
+    
+    match /posts/{postId} {
+      allow read: if true;
+      allow create: if request.auth != null && request.resource.data.authorId == request.auth.uid;
+      allow update: if request.auth != null && (
+        request.auth.uid == resource.data.authorId ||
+        request.resource.data.diff(resource.data).affectedKeys().hasOnly(['likes'])
+      );
+      allow delete: if request.auth != null && request.auth.uid == resource.data.authorId;
+    }
+  }
+}
+

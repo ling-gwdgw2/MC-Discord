@@ -1,0 +1,469 @@
+/* --- Pinterest-Style Profile Page Styles สไตล์ของหน้าโปรไฟล์รูปแบบ Pinterest --- */
+
+.profile-section {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 24px 16px;
+}
+
+/* --- Pinterest-Style Profile Header ส่วนหัวโปรไฟล์สไตล์ Pinterest --- */
+.pinterest-profile-header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    margin-bottom: 24px;
+    padding-top: 24px;
+    width: 100%;
+}
+
+.profile-avatar-edit-wrapper {
+    position: relative;
+    width: 120px;
+    height: 120px;
+    margin-bottom: 16px;
+    flex-shrink: 0;
+}
+
+.profile-avatar-large-container {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    border: none;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+    overflow: hidden;
+    background: #e2e2e2;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.3s ease;
+}
+
+.pinterest-profile-header:hover .profile-avatar-large-container {
+    transform: scale(1.03);
+}
+
+.profile-avatar-large {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.profile-avatar-large-initials {
+    font-family: var(--font-primary), sans-serif;
+    font-size: 42px;
+    font-weight: 700;
+    color: #5f5f5f;
+}
+
+.avatar-upload-zone {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    background: rgba(0, 0, 0, 0.55);
+    opacity: 0;
+    transition: opacity 0.25s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+
+.profile-avatar-edit-wrapper:hover .avatar-upload-zone {
+    opacity: 1;
+}
+
+.avatar-upload-text {
+    color: #ffffff;
+    font-size: 11px;
+    font-weight: 700;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+}
+
+.avatar-upload-text i {
+    font-size: 16px;
+}
+
+.profile-user-name-title {
+    font-family: var(--font-primary), sans-serif;
+    font-size: 32px;
+    font-weight: 700;
+    color: #111111;
+    margin: 0 0 4px 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 100%;
+}
+
+.profile-user-email-subtitle {
+    font-family: var(--font-primary), sans-serif;
+    font-size: 14px;
+    color: #5f5f5f;
+    margin: 0 0 12px 0;
+    font-weight: 500;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 100%;
+}
+
+.profile-stats-followers {
+    font-family: var(--font-primary), sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    color: #111111;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+}
+
+.profile-stats-followers .dot-divider {
+    color: #5f5f5f;
+}
+
+.profile-bio-text {
+    font-family: var(--font-primary), sans-serif;
+    font-size: 14px;
+    color: #111111;
+    margin: 0 0 20px 0;
+    font-weight: 500;
+    max-width: 450px;
+    line-height: 1.4;
+}
+
+.profile-action-buttons {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+/* Pinterest Minimalist Buttons ปุ่มสไตล์มินิมอลแบบ Pinterest */
+.pinterest-btn {
+    font-family: var(--font-primary), sans-serif;
+    background-color: #efefef;
+    border: none;
+    border-radius: 24px;
+    color: #111111;
+    font-size: 14px;
+    font-weight: 700;
+    padding: 10px 18px;
+    cursor: pointer;
+    transition: background-color 0.2s ease, transform 0.1s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    box-shadow: none !important;
+}
+
+.pinterest-btn:hover {
+    background-color: #e2e2e2;
+}
+
+.pinterest-btn:active {
+    transform: scale(0.97);
+}
+
+.pinterest-btn.logout-btn {
+    background-color: #ffeaea;
+    color: #e60023;
+}
+
+.pinterest-btn.logout-btn:hover {
+    background-color: #ffd3d3;
+}
+
+/* Pinterest Tabs switcher styling รูปแบบสไตล์ปุ่มแท็บสวิตช์แบบ Pinterest */
+.pinterest-tab-nav {
+    display: flex;
+    justify-content: center;
+    gap: 24px;
+    border-bottom: 1px solid #efefef;
+    margin-bottom: 32px;
+    width: 100%;
+}
+
+.pinterest-tab-btn {
+    font-family: var(--font-primary), sans-serif;
+    background: none;
+    border: none;
+    font-size: 16px;
+    font-weight: 700;
+    color: #5f5f5f;
+    padding: 12px 6px;
+    cursor: pointer;
+    position: relative;
+    transition: color 0.2s ease;
+}
+
+.pinterest-tab-btn:hover {
+    color: #111111;
+}
+
+.pinterest-tab-btn.active {
+    color: #111111;
+}
+
+.pinterest-tab-btn.active::after {
+    content: '';
+    position: absolute;
+    bottom: -1px;
+    left: 0;
+    width: 100%;
+    height: 3px;
+    background-color: #111111;
+    border-radius: 2px;
+}
+
+/* --- Pinterest-Style Image Feed บอร์ดฟีดรูปภาพสไตล์ Pinterest --- */
+.profile-uploads-card {
+    background: none !important;
+    border: none !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+    margin-top: 10px;
+    width: 100%;
+}
+
+.profile-uploads-card .posts-grid {
+    display: block !important;
+    column-count: 3;
+    column-gap: 16px;
+    width: 100%;
+}
+
+@media (max-width: 768px) {
+    .profile-uploads-card .posts-grid {
+        column-count: 2 !important;
+    }
+}
+
+@media (max-width: 500px) {
+    .profile-uploads-card .posts-grid {
+        column-count: 1 !important;
+    }
+}
+
+.profile-uploads-card .post-card {
+    display: inline-block;
+    width: 100%;
+    break-inside: avoid;
+    border-radius: 16px !important;
+    border: none !important;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05) !important;
+    background-color: #ffffff;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    overflow: hidden;
+    margin-bottom: 16px;
+}
+
+.profile-uploads-card .post-card:hover {
+    transform: translateY(-4px) !important;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12) !important;
+}
+
+.profile-uploads-card .post-card-img-wrapper {
+    border-radius: 0;
+    cursor: pointer;
+    background: none !important;
+}
+
+.profile-uploads-card .post-card-img-wrapper::after {
+    display: none !important;
+}
+
+.profile-uploads-card .post-card-img {
+    opacity: 1 !important;
+    display: block;
+    width: 100%;
+    height: auto;
+}
+
+.profile-uploads-card .card-caption {
+    position: static;
+    padding: 8px 12px 12px 12px;
+    font-size: 13px;
+    font-weight: 600;
+    color: #333333;
+    background: #ffffff;
+    margin: 0;
+    text-align: left;
+    display: block;
+    opacity: 1 !important;
+}
+
+/* --- Profile Edit Card การ์ดแบบฟอร์มแก้ไขข้อมูลโปรไฟล์ --- */
+.profile-edit-card {
+    background-color: var(--ui-cream);
+    border-radius: 1.5em;
+    padding: 1.5em;
+    border: 0.2em solid var(--ui-dark);
+    box-shadow: 0.5em 0.5em 0 var(--ui-dark);
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    transition:
+        transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1),
+        box-shadow 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+    margin-bottom: 24px;
+    max-width: 500px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.profile-edit-card .edit-title {
+    font-family: var(--font-heading), sans-serif;
+    font-size: 1.2em;
+    font-weight: 800;
+    color: var(--ui-dark);
+    margin-top: 0;
+}
+
+.profile-edit-card .form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin-bottom: 16px;
+}
+
+.profile-edit-card label {
+    font-family: var(--font-primary), sans-serif;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--ui-dark);
+    text-transform: uppercase;
+}
+
+.profile-edit-card input {
+    background-color: #ffffff;
+    border: 0.15em solid var(--ui-dark);
+    padding: 10px 14px;
+    border-radius: 10px;
+    font-size: 14px;
+    font-family: var(--font-primary), sans-serif;
+}
+
+.profile-save-btn {
+    background-color: var(--primary-cyan);
+    border: 0.15em solid var(--ui-dark);
+    color: #ffffff;
+    font-weight: 800;
+    padding: 10px 24px;
+    border-radius: 12px;
+    cursor: pointer;
+    box-shadow: 0.2em 0.2em 0 var(--ui-dark);
+    transition: all 0.1s ease;
+}
+
+.profile-save-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0.3em 0.3em 0 var(--ui-dark);
+}
+
+.profile-save-btn:active {
+    transform: translateY(1px);
+    box-shadow: 0.1em 0.1em 0 var(--ui-dark);
+}
+
+/* Follow button interactivity */
+.follow-btn {
+    transition: background-color 0.25s ease, transform 0.1s ease !important;
+}
+.follow-btn:hover {
+    transform: scale(1.05) !important;
+}
+.follow-btn:active {
+    transform: scale(0.95) !important;
+}
+
+/* Follow text link hover styling */
+#profile-btn-followers:hover,
+#profile-btn-following:hover {
+    text-decoration: underline !important;
+    opacity: 0.85;
+}
+
+/* Follow modal item styling */
+.follow-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 8px;
+    border-bottom: 1px solid #efefef;
+    transition: background-color 0.2s ease;
+    border-radius: 12px;
+    margin-bottom: 4px;
+}
+.follow-item:hover {
+    background-color: #f7f9fa;
+}
+
+.follow-item-user {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    cursor: pointer;
+    flex: 1;
+    min-width: 0;
+}
+
+.follow-item-name {
+    font-weight: 700;
+    color: var(--ui-dark);
+    font-size: 14px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.follow-item-avatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 1.5px solid var(--ui-dark);
+}
+
+.follow-item-initials {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: var(--bg-page);
+    color: var(--ui-dark);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 12px;
+    border: 1.5px solid var(--ui-dark);
+}
+
+.mini-follow-btn {
+    padding: 6px 14px;
+    font-size: 12px;
+    font-weight: 800;
+    border-radius: 20px;
+    border: 1.5px solid var(--ui-dark);
+    cursor: pointer;
+    box-shadow: 0.12em 0.12em 0 var(--ui-dark);
+    transition: all 0.15s ease;
+    white-space: nowrap;
+}
+.mini-follow-btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0.18em 0.18em 0 var(--ui-dark);
+}
+.mini-follow-btn:active {
+    transform: translateY(1px);
+    box-shadow: 0.05em 0.05em 0 var(--ui-dark);
+}

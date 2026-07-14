@@ -1,0 +1,2121 @@
+/* Design System & Variables ระบบการออกแบบและตัวแปรหลัก */
+:root {
+    --primary-cyan: #4cb8b8;
+    --primary-cyan-hover: #3da3a3;
+    --accent-pink: #ffeef3;
+    --accent-pink-hover: #ffeff3;
+    --accent-pink-contrast: #4cb8b8;
+    --accent-pink-contrast-hover: #3da3a3;
+
+    --bg-page: #f1f7f7;
+    --bg-card: #ffffff;
+
+    /* Pill Colors matching reference image ชุดสีของเม็ดยาป้ายกำกับตามภาพอ้างอิง */
+    --pill-1: #bfecec;
+    --pill-2: #64cccc;
+    --pill-3: #4e8098;
+    --pill-4: #434a58;
+    --pill-5: #ffffff;
+
+    --text-main: #2b353e;
+    --text-muted: #4b5e70;
+    --font-primary: 'Outfit', sans-serif;
+    --font-heading: 'Lexend', sans-serif;
+
+    --border-radius-lg: 24px;
+    --border-radius-md: 16px;
+    --border-radius-sm: 12px;
+
+    --shadow-soft: 0 10px 30px rgba(76, 184, 184, 0.08);
+    --shadow-medium: 0 15px 40px rgba(0, 0, 0, 0.05);
+    --shadow-strong: 0 20px 45px rgba(76, 184, 184, 0.15);
+
+    --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Global Reset ล้างค่าเริ่มต้นของเบราว์เซอร์ */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+/* นำ overflow-x ออกจาก html เพื่อไม่ให้ไปปิดกั้น/ขัดขวางการทำงานของเมนูล็อกบนหน้าจอ (position: sticky) */
+html {
+    max-width: 100%;
+}
+
+body {
+    max-width: 100%;
+    overflow-x: hidden;
+    /* ควบคุมการล้นด้านระนาบนอนบนบอดี้เท่านั้น */
+    background-color: var(--bg-page);
+    font-family: var(--font-primary);
+    color: var(--text-main);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    padding: 0 0 20px 0;
+}
+
+/* Background Artwork Accents องค์ประกอบภาพพื้นหลังตกแต่งเว็บ */
+.bg-pattern {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -2;
+    opacity: 0.06;
+    background-image: radial-gradient(var(--primary-cyan) 1.5px, transparent 1.5px), radial-gradient(var(--primary-cyan) 1.5px, var(--bg-page) 1.5px);
+    background-size: 40px 40px;
+    background-position: 0 0, 20px 20px;
+}
+
+.heart-accent {
+    position: absolute;
+    z-index: -1;
+    font-size: 32px;
+    opacity: 0.15;
+    animation: floatHeart 6s ease-in-out infinite alternate;
+}
+
+.heart-1 {
+    top: 15%;
+    left: 10%;
+    animation-delay: 0s;
+}
+
+.heart-2 {
+    bottom: 25%;
+    right: 8%;
+    animation-delay: 3s;
+}
+
+@keyframes floatHeart {
+    0% {
+        transform: translateY(0) rotate(0deg) scale(1);
+    }
+
+    100% {
+        transform: translateY(-20px) rotate(15deg) scale(1.1);
+    }
+}
+
+.app-container {
+    width: 100%;
+    max-width: 100%;
+    margin: 0 auto;
+    background-color: transparent;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding: 0;
+}
+
+/* แถบหัวเว็บหลัก (Main Navigation Header - ล็อกไว้ด้านบนถาวร Opaque Sticky) */
+.main-header {
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    background: #f1f7f7;
+    border-bottom: 1.5px solid rgba(76, 184, 184, 0.15);
+    box-shadow: 0 2px 15px rgba(0, 0, 0, 0.04);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 40px;
+    max-width: 1100px;
+    width: 100%;
+    margin: 0 auto;
+    animation: headerFadeIn 0.5s ease both;
+    transition: max-width 0.3s ease, padding 0.3s ease, background-color 0.3s ease;
+}
+
+@media (max-width: 768px) {
+    .main-header {
+        padding: 12px 20px;
+    }
+
+    .main-header.header-sticky {
+        padding: 8px 20px;
+        left: 0;
+        transform: none;
+        width: 100%;
+        max-width: 100%;
+    }
+
+    .main-header.header-sticky.header-hidden {
+        transform: translateY(-100%);
+    }
+}
+
+.header-logo {
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    transition: var(--transition-smooth);
+}
+
+.header-logo:hover {
+    transform: scale(1.03);
+}
+
+/* จัดแนวโลโก้คู่กับกล่องค้นหาในระนาบเดียวกัน */
+.header-logo-search {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    flex: 1;
+}
+
+/* ดีไซน์กล่องช่องค้นหาในระดับพรีเมียมบน Header */
+.header-search-box {
+    display: flex;
+    align-items: center;
+    max-width: 300px;
+    width: 100%;
+}
+
+.header-search-box input {
+    font-family: inherit;
+    font-size: inherit;
+    background-color: #f4f2f2;
+    border: none;
+    color: #646464;
+    padding: 0.7rem 1rem;
+    border-radius: 30px;
+    width: 12em;
+    transition: all ease-in-out 0.5s;
+    margin-right: -2rem;
+}
+
+.header-search-box input:hover,
+.header-search-box input:focus {
+    box-shadow: 0 0 1em #00000013;
+}
+
+.header-search-box input:focus {
+    outline: none;
+    background-color: #f0eeee;
+}
+
+.header-search-box input::placeholder {
+    font-weight: 100;
+    color: #ccc;
+}
+
+.header-search-box .search-icon {
+    color: #b4b4b4;
+    font-size: 14px;
+    cursor: pointer;
+    transition: color 0.3s ease;
+}
+
+.header-search-box input:focus~.search-icon,
+.header-search-box .search-icon:hover {
+    color: var(--primary-cyan);
+}
+
+.logo-img {
+    height: 38px;
+    width: auto;
+    border-radius: 10px;
+}
+
+.logo-text {
+    font-family: 'Lexend', sans-serif;
+    font-size: 21px;
+    font-weight: 800;
+    color: var(--text-main);
+    margin-left: 8px;
+    letter-spacing: -0.5px;
+}
+
+.nav-icon-btn {
+    width: 48px;
+    height: 48px;
+    border: none;
+    border-radius: 14px;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 20px;
+    transition: var(--transition-smooth);
+}
+
+.profile-btn {
+    background-color: #6e8494;
+    color: #ffffff;
+}
+
+.profile-btn:hover {
+    background-color: #556775;
+    transform: translateY(-3px);
+}
+
+.add-btn {
+    background-color: #c9f4f4;
+    color: var(--primary-cyan-hover);
+}
+
+.add-btn:hover {
+    background-color: var(--primary-cyan);
+    color: #ffffff;
+    transform: translateY(-3px) rotate(90deg);
+}
+
+.main-nav {
+    display: flex;
+    gap: 32px;
+    background: transparent;
+    padding: 8px 24px;
+}
+
+.main-nav .nav-icon {
+    display: none;
+}
+
+.nav-link {
+    text-decoration: none;
+    color: var(--text-main);
+    font-family: var(--font-heading);
+    font-weight: 600;
+    font-size: 19px;
+    padding: 8px 4px;
+    position: relative;
+    transition: var(--transition-smooth);
+}
+
+.nav-link::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 0;
+    height: 3px;
+    background-color: var(--text-main);
+    transition: var(--transition-smooth);
+    border-radius: 2px;
+}
+
+.nav-link.active::after {
+    width: 100%;
+}
+
+.nav-link:hover {
+    color: var(--primary-cyan);
+}
+
+/* กล่องรวมปุ่มกดตั้งค่า/จัดการโปรไฟล์ด้านขวาของ Header */
+.header-actions {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    justify-content: flex-end;
+}
+
+.btn {
+    padding: 10px 24px;
+    border-radius: 24px;
+    font-family: var(--font-heading);
+    font-weight: 700;
+    font-size: 17px;
+    cursor: pointer;
+    transition: var(--transition-smooth);
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.btn-outline {
+    background: transparent;
+    border: 2px solid var(--text-main);
+    color: var(--text-main);
+}
+
+.btn-outline:hover {
+    background-color: var(--text-main);
+    color: #ffffff;
+    transform: translateY(-2px);
+}
+
+.btn-solid {
+    background-color: var(--primary-cyan);
+    border: none;
+    color: #ffffff;
+    box-shadow: 0 4px 15px rgba(75, 201, 201, 0.25);
+}
+
+.btn-solid:hover {
+    background-color: var(--primary-cyan-hover);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(75, 201, 201, 0.35);
+}
+
+/* Hero Banner แบนเนอร์ต้อนรับหลักด้านบน */
+.hero-banner {
+    position: relative;
+    z-index: 1;
+    /* ล็อกขอบเขตเลเยอร์สำหรับองค์ประกอบภายในแบนเนอร์ */
+    background: linear-gradient(135deg, #74e5e5 0%, #4cb8b8 100%);
+    border-radius: var(--border-radius-lg);
+    padding: 48px 64px;
+    height: 280px;
+    display: flex;
+    align-items: center;
+    overflow: visible;
+    /* Allows character overlay to pop out ช่วยให้ตัวการ์ตูนลอยซ้อนพ้นขอบขึ้นมาได้ */
+    box-shadow: var(--shadow-soft);
+    animation: slideRightFade 0.8s cubic-bezier(0.4, 0, 0.2, 1) both;
+}
+
+.banner-content {
+    max-width: 50%;
+    color: #ffffff;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    position: relative;
+    z-index: 2;
+}
+
+.miku-logo {
+    font-family: 'Lexend', sans-serif;
+    font-size: 17px;
+    font-weight: 800;
+    color: var(--accent-pink-contrast);
+    background-color: #ffffff;
+    padding: 0 16px;
+    height: 48px;
+    border-radius: 14px;
+    letter-spacing: 1px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: var(--shadow-medium);
+    margin-right: 8px;
+}
+
+.server-title {
+    font-family: var(--font-heading);
+    font-size: 50px;
+    font-weight: 800;
+    line-height: 1.1;
+    color: var(--text-main);
+}
+
+.server-desc {
+    font-size: 17px;
+    line-height: 1.6;
+    color: rgba(43, 53, 62, 0.85);
+    font-weight: 500;
+}
+
+.read-more-btn {
+    align-self: flex-start;
+    color: var(--text-main);
+    text-decoration: none;
+    font-weight: 700;
+    font-size: 17px;
+    margin-top: 8px;
+    border-bottom: 2.5px solid var(--text-main);
+    padding-bottom: 2px;
+    transition: var(--transition-smooth);
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.read-more-btn:hover {
+    color: var(--accent-pink-contrast);
+    border-bottom-color: var(--accent-pink-contrast);
+    padding-left: 4px;
+}
+
+.banner-slider-dots {
+    position: absolute;
+    bottom: 24px;
+    left: 64px;
+    display: flex;
+    gap: 8px;
+    z-index: 2;
+}
+
+.banner-slider-dots .dot {
+    width: 28px;
+    height: 4px;
+    background-color: rgba(255, 255, 255, 0.4);
+    border-radius: 2px;
+    cursor: pointer;
+    transition: var(--transition-smooth);
+}
+
+.banner-slider-dots .dot.active {
+    background-color: var(--text-main);
+    width: 36px;
+}
+
+/* Character Overlay Illustration ภาพประกอบตัวการ์ตูนลอยซ้อน */
+/* ภาพประกอบตัวการ์ด Miku ในแบนเนอร์หลัก */
+.hero-character-wrapper {
+    position: absolute;
+    right: 40px;
+    bottom: -20px;
+    height: 315px;
+    width: auto;
+    z-index: 10;
+    pointer-events: none;
+}
+
+.hero-character {
+    height: 105%;
+    object-fit: contain;
+    filter: drop-shadow(0 15px 25px rgba(0, 0, 0, 0.12));
+    transform-origin: bottom center;
+    animation: characterEntrance 1.2s cubic-bezier(0.16, 1, 0.3, 1) 0.3s both, characterFloat 4s ease-in-out infinite alternate 1.5s;
+}
+
+@keyframes characterFloat {
+    0% {
+        transform: translateY(0) rotate(0deg);
+    }
+
+    100% {
+        transform: translateY(-8px) rotate(1deg);
+    }
+}
+
+/* Dashboard Columns Grid Layout โครงสร้างตารางแบ่งคอลัมน์ของแดชบอร์ด */
+.dashboard-grid {
+    display: grid;
+    grid-template-columns: 260px 1fr 340px;
+    gap: 24px;
+    align-items: start;
+    position: relative;
+    /* เพื่อรองรับการสลับเลเยอร์แบบ z-index */
+    z-index: 2;
+    /* ดันกล่องกริดของเนื้อหาขึ้นมาบังขาส่วนล่างของตัวการ์ด Miku ในแบนเนอร์ */
+}
+
+.grid-column {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    min-width: 0;
+}
+
+.column-header h2 {
+    font-family: var(--font-heading);
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--text-main);
+    line-height: 1.4;
+}
+
+/* Column 1: Artwork / Gallery Column คอลัมน์ที่ 1: ตารางผลงานสกินสไตล์ Pinterest */
+.col-artwork {
+    background: transparent;
+    animation: slideUpFade 0.8s cubic-bezier(0.4, 0, 0.2, 1) 0.3s both;
+    min-width: 0;
+}
+
+.artwork-slider {
+    width: 100%;
+    overflow: hidden;
+    border-radius: var(--border-radius-lg);
+    background-color: transparent;
+}
+
+.artwork-track {
+    display: flex;
+    transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    width: 100%;
+}
+
+.artwork-card {
+    flex: 0 0 100%;
+    flex-shrink: 0;
+    background-color: var(--bg-card);
+    border-radius: var(--border-radius-lg);
+    overflow: hidden;
+    box-shadow: var(--shadow-medium);
+    transition: var(--transition-smooth);
+    padding: 10px;
+}
+
+.artwork-card:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--shadow-strong);
+}
+
+.card-img-wrapper {
+    width: 100%;
+    height: 260px;
+    border-radius: var(--border-radius-md);
+    overflow: hidden;
+    position: relative;
+    background-color: #f1f7f7;
+}
+
+.card-img-wrapper img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s ease;
+}
+
+.artwork-card:hover .card-img-wrapper img {
+    transform: scale(1.05);
+}
+
+.artwork-author {
+    padding: 12px 8px 6px;
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--text-muted);
+}
+
+.slider-controls {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+}
+
+.slider-arrow {
+    width: 44px;
+    height: 44px;
+    border: none;
+    border-radius: 50%;
+    background-color: var(--bg-card);
+    color: var(--text-main);
+    cursor: pointer;
+    box-shadow: var(--shadow-medium);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 14px;
+    transition: var(--transition-smooth);
+}
+
+.slider-arrow:hover {
+    background-color: var(--primary-cyan);
+    color: #ffffff;
+    transform: scale(1.05);
+}
+
+.view-more-btn {
+    flex-grow: 1;
+    height: 44px;
+    border: none;
+    border-radius: 22px;
+    background-color: var(--bg-card);
+    color: var(--text-main);
+    font-family: var(--font-heading);
+    font-weight: 700;
+    font-size: 17px;
+    cursor: pointer;
+    box-shadow: var(--shadow-medium);
+    transition: var(--transition-smooth);
+}
+
+.view-more-btn:hover {
+    box-shadow: var(--shadow-strong);
+    transform: translateY(-2px);
+    background-color: #f9fdfd;
+}
+
+/* Column 2: Recent Channels & Stickers คอลัมน์ที่ 2: ช่องแชทที่เปิดล่าสุดและสติกเกอร์ */
+.col-channels {
+    min-width: 0;
+    animation: slideUpFade 0.8s cubic-bezier(0.4, 0, 0.2, 1) 0.5s both;
+}
+
+.channel-layout {
+    display: grid;
+    grid-template-columns: 1.8fr 1fr;
+    gap: 16px;
+}
+
+.channels-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.channel-pill {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 14px 20px;
+    border-radius: var(--border-radius-md);
+    cursor: pointer;
+    transition: var(--transition-smooth);
+    font-weight: 700;
+    font-size: 16px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.02);
+}
+
+.channel-pill .search-icon {
+    font-size: 15px;
+}
+
+.channel-pill.style-1 {
+    background-color: var(--pill-1);
+    color: #3b8a8a;
+}
+
+.channel-pill.style-2 {
+    background-color: var(--pill-2);
+    color: #ffffff;
+}
+
+.channel-pill.style-3 {
+    background-color: var(--pill-3);
+    color: #ffffff;
+}
+
+.channel-pill.style-4 {
+    background-color: var(--pill-4);
+    color: #ffffff;
+}
+
+.channel-pill.style-5 {
+    background-color: var(--pill-5);
+    color: var(--text-main);
+    border: 2px solid #e1ebeb;
+    box-shadow: none;
+}
+
+.channel-pill:hover {
+    transform: translateX(6px) scale(1.01);
+}
+
+/* Sticker Grid Items รายการแสดงผลสติกเกอร์ในตาราง */
+.stickers-container {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.sticker-card {
+    background-color: var(--bg-card);
+    border-radius: var(--border-radius-lg);
+    box-shadow: var(--shadow-medium);
+    padding: 16px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    transition: var(--transition-smooth);
+    overflow: visible;
+}
+
+.sticker-card:hover {
+    transform: translateY(-3px) rotate(2deg);
+    box-shadow: var(--shadow-strong);
+}
+
+.sticker-card .close-btn {
+    position: absolute;
+    top: -8px;
+    left: -8px;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    border: none;
+    background-color: var(--pill-2);
+    color: #ffffff;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    transition: var(--transition-smooth);
+}
+
+.sticker-card .close-btn:hover {
+    background-color: var(--accent-pink);
+    transform: scale(1.1);
+}
+
+.sticker-img-wrapper {
+    width: 100px;
+    height: 100px;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.sticker-img-wrapper img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+/* Column 3: Features & Discord Stats คอลัมน์ที่ 3: สถิติเซิร์ฟเวอร์ Discord และฟีเจอร์เด่น */
+.col-features {
+    gap: 16px;
+    animation: slideUpFade 0.8s cubic-bezier(0.4, 0, 0.2, 1) 0.7s both;
+}
+
+.feature-card {
+    background-color: var(--bg-card);
+    border-radius: var(--border-radius-lg);
+    padding: 24px;
+    box-shadow: var(--shadow-medium);
+    display: flex;
+    gap: 20px;
+    align-items: flex-start;
+    transition: var(--transition-smooth);
+}
+
+.feature-card:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--shadow-strong);
+}
+
+/* Card 1: Custom online styling การ์ดประเภทที่ 1: สถานะสมาชิกออนไลน์ */
+.feature-num-wrapper {
+    background-color: #e6f9f9;
+    border-radius: var(--border-radius-md);
+    width: 56px;
+    height: 56px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-shrink: 0;
+}
+
+.feature-num {
+    font-family: var(--font-heading);
+    font-size: 26px;
+    font-weight: 800;
+    color: var(--primary-cyan);
+}
+
+/* Card 2: Custom circular icon การ์ดประเภทที่ 2: แสดงไอคอนวงกลมพร้อมข้อมูล */
+.feature-icon-wrapper {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-shrink: 0;
+    overflow: hidden;
+}
+
+.circle-miku {
+    background-color: #e6f9f9;
+    border: 2px solid var(--primary-cyan);
+    padding: 4px;
+}
+
+.feature-circle-img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+.music-notes {
+    background-color: #fff0f3;
+    border: 2px solid var(--accent-pink-contrast);
+    padding: 4px;
+}
+
+.feature-card-link {
+    text-decoration: none;
+    color: inherit;
+    display: block;
+    transition: var(--transition-smooth);
+}
+
+.feature-card-link:hover .feature-card {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-strong);
+}
+
+.feature-body {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.feature-title {
+    font-family: var(--font-heading);
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--text-main);
+}
+
+.feature-text {
+    font-size: 15px;
+    line-height: 1.5;
+    color: var(--text-muted);
+}
+
+/* Avatar rows for Discord Active Users list แถวแสดงรายชื่อสมาชิก Discord ที่กำลังออนไลน์ */
+.members-avatar-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 10px;
+}
+
+.member-avatar-badge {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    position: relative;
+    background-color: #f1f7f7;
+    border: 2.5px solid var(--bg-card);
+    transition: var(--transition-smooth);
+    cursor: pointer;
+}
+
+.member-avatar-badge:hover {
+    transform: scale(1.15) translateY(-2px);
+    z-index: 10;
+}
+
+.member-avatar-badge img {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.status-dot {
+    position: absolute;
+    bottom: -2px;
+    right: -2px;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    border: 1.5px solid var(--bg-card);
+}
+
+.status-dot.online {
+    background-color: #23a55a;
+    animation: pulseOnline 2s infinite;
+}
+
+.status-dot.idle {
+    background-color: #f0b232;
+    animation: pulseIdle 2s infinite;
+}
+
+.status-dot.dnd {
+    background-color: #3ff2e9;
+    animation: pulseDnd 2s infinite;
+}
+
+@keyframes pulseOnline {
+    0% {
+        box-shadow: 0 0 0 0 rgba(35, 165, 90, 0.5);
+    }
+
+    70% {
+        box-shadow: 0 0 0 5px rgba(35, 165, 90, 0);
+    }
+
+    100% {
+        box-shadow: 0 0 0 0 rgba(35, 165, 90, 0);
+    }
+}
+
+@keyframes pulseIdle {
+    0% {
+        box-shadow: 0 0 0 0 rgba(240, 178, 50, 0.5);
+    }
+
+    70% {
+        box-shadow: 0 0 0 5px rgba(240, 178, 50, 0);
+    }
+
+    100% {
+        box-shadow: 0 0 0 0 rgba(240, 178, 50, 0);
+    }
+}
+
+@keyframes pulseDnd {
+    0% {
+        box-shadow: 0 0 0 0 rgba(63, 230, 242, 0.5);
+    }
+
+    70% {
+        box-shadow: 0 0 0 5px rgba(242, 63, 67, 0);
+    }
+
+    100% {
+        box-shadow: 0 0 0 0 rgba(242, 63, 67, 0);
+    }
+}
+
+/* Compact member badge cards (rendered by app.js updateDiscordUI) การ์ดป้ายข้อมูลสมาชิกขนาดกะทัดรัด */
+.member-badge {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    width: 48px;
+}
+
+.avatar-presence-wrapper {
+    position: relative;
+    width: 36px;
+    height: 36px;
+}
+
+.presence-avatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid var(--bg-card);
+    transition: transform 0.2s ease;
+}
+
+.member-badge:hover .presence-avatar {
+    transform: scale(1.15) translateY(-2px);
+}
+
+.presence-dot {
+    position: absolute;
+    bottom: -1px;
+    right: -1px;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    border: 2px solid var(--bg-card);
+}
+
+.presence-dot.online {
+    background-color: #23a55a;
+    animation: pulseOnline 2s infinite;
+}
+
+.presence-dot.idle {
+    background-color: #f0b232;
+    animation: pulseIdle 2s infinite;
+}
+
+.presence-dot.dnd {
+    background-color: #f23f43;
+    animation: pulseDnd 2s infinite;
+}
+
+.presence-name {
+    font-size: 9px;
+    color: var(--text-muted);
+    text-align: center;
+    max-width: 48px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    line-height: 1.2;
+}
+
+/* Micro floating animations อนิเมชั่นขยับขึ้นลงเบาๆ (ลอยตัว) */
+.animate-float-slow {
+    animation: floatingCard 6s ease-in-out infinite alternate;
+}
+
+.animate-float-medium {
+    animation: floatingCard 5s ease-in-out infinite alternate-reverse;
+}
+
+.animate-float-fast {
+    animation: floatingCard 4s ease-in-out infinite alternate;
+}
+
+@keyframes floatingCard {
+    0% {
+        transform: translateY(0);
+    }
+
+    100% {
+        transform: translateY(-6px);
+    }
+}
+
+/* อนิเมชั่นเฟดของแถบเมนูด้านบน เลี่ยงการใช้ transform เพื่อให้ล็อกกับหน้าจออย่างเสถียร (ไม่หลุดเวลาเลื่อนจอ) */
+@keyframes headerFadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+/* Keyframes for Staggered Entrance Animations คีย์เฟรมของอนิเมชั่นแบบทยอยแสดงผล */
+@keyframes slideDownFade {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes slideRightFade {
+    from {
+        opacity: 0;
+        transform: translateX(-40px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes slideUpFade {
+    from {
+        opacity: 0;
+        transform: translateY(40px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes characterEntrance {
+    0% {
+        opacity: 0;
+        transform: translateX(60px) scale(0.95);
+    }
+
+    100% {
+        opacity: 1;
+        transform: translateX(0) scale(1);
+    }
+}
+
+/* Shine Sweep effect for CTAs อนิเมชั่นแถบแสงกวาดผ่านปุ่มเรียกความสนใจ */
+.btn-solid,
+.signup-btn,
+.view-more-btn {
+    position: relative;
+    overflow: hidden;
+}
+
+.btn-solid::after,
+.signup-btn::after,
+.view-more-btn::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -150%;
+    width: 50%;
+    height: 100%;
+    background: linear-gradient(to right,
+            rgba(255, 255, 255, 0) 0%,
+            rgba(255, 255, 255, 0.3) 50%,
+            rgba(255, 255, 255, 0) 100%);
+    transform: skewX(-25deg);
+}
+
+.btn-solid:hover::after,
+.signup-btn:hover::after,
+.view-more-btn:hover::after {
+    animation: shineSweep 0.8s ease;
+}
+
+@keyframes shineSweep {
+    100% {
+        left: 150%;
+    }
+}
+
+/* Channel Pill hover gradient wash & scale active clicks เอฟเฟกต์สีไล่ระดับเมื่อนำเมาส์ชี้ปุ่มช่องแชท */
+.channel-pill {
+    position: relative;
+    overflow: hidden;
+    z-index: 1;
+}
+
+.channel-pill::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, rgba(255, 255, 255, 0.15) 0%, rgba(255, 255, 255, 0) 100%);
+    transition: var(--transition-smooth);
+    z-index: -1;
+}
+
+.channel-pill:hover::after {
+    left: 0;
+}
+
+.channel-pill:active {
+    transform: scale(0.97) !important;
+}
+
+.nav-icon-btn:active,
+.btn:active,
+.slider-arrow:active,
+.view-more-btn:active {
+    transform: scale(0.95);
+}
+
+/* Responsive Breakdown สไตล์สำหรับรองรับขนาดหน้าจอต่างๆ (Responsive) */
+@media (max-width: 1024px) {
+    .dashboard-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .hero-banner {
+        height: auto;
+        padding: 40px;
+    }
+
+    .banner-content {
+        max-width: 60%;
+    }
+
+    .hero-character-wrapper {
+        height: 280px;
+        right: 20px;
+    }
+}
+
+@media (max-width: 768px) {
+
+    /* 1. จัดการระยะห่างขอบเว็บและเพิ่มพื้นที่ด้านล่างเพื่อป้องกันการบังของ Bottom Nav Bar */
+    body {
+        padding: 0 10px 80px !important;
+    }
+
+    /* 2. ปรับแต่งส่วนหัว (Header) ด้านบนให้ดูเรียบร้อย กระชับ และสบายตาสำหรับจอขนาดเล็ก */
+    .main-header {
+        display: flex;
+        flex-wrap: nowrap;
+        justify-content: space-between;
+        align-items: center;
+        gap: 8px;
+        padding: 10px 12px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.02);
+    }
+
+    /* 3. จัดการระยะห่างของโลโก้และการซ่อนหัวชื่อเมื่อมีช่องค้นหาบนมือถือ */
+    .header-logo-search:has(.header-search-box) .logo-text {
+        display: none !important;
+    }
+
+    .logo-text {
+        font-size: 17px !important;
+        margin-left: 6px !important;
+    }
+
+    .logo-img {
+        height: 32px !important;
+    }
+
+    .header-logo-search {
+        gap: 10px !important;
+        flex: 1 !important;
+    }
+
+    .header-search-box {
+        max-width: 170px !important;
+        /* บีบขนาดค้นหาบนมือถือให้สอดคล้องกับขนาดจอ */
+        padding: 5px 10px !important;
+        border-radius: 16px !important;
+    }
+
+    .header-search-box input {
+        font-size: 13px !important;
+    }
+
+    /* 4. ปรับขนาดกลุ่มปุ่มกด Utilities ขวา (Profile / Add) */
+    .header-actions {
+        gap: 8px !important;
+    }
+
+    .header-actions .nav-icon-btn {
+        width: 38px !important;
+        height: 38px !important;
+        border-radius: 10px !important;
+        font-size: 16px !important;
+    }
+
+    /* 5. เปลี่ยนแถบเมนูหลักเป็น Bottom Navigation Bar แบบลอยสไตล์แอป Native */
+    .main-nav {
+        position: fixed !important;
+        bottom: 16px !important;
+        left: 16px !important;
+        right: 16px !important;
+        height: 64px !important;
+        background: rgba(241, 247, 247, 0.85) !important;
+        backdrop-filter: blur(20px) !important;
+        -webkit-backdrop-filter: blur(20px) !important;
+        border: 1.5px solid rgba(76, 184, 184, 0.2) !important;
+        border-radius: 20px !important;
+        box-shadow: 0 8px 32px rgba(76, 184, 184, 0.15) !important;
+        z-index: 1000 !important;
+        display: flex !important;
+        justify-content: space-around !important;
+        align-items: center !important;
+        padding: 0 12px !important;
+        margin: 0 !important;
+        flex: none !important;
+    }
+
+    /* 6. ปรับแต่งปุ่มลิงก์ด้านในแถบ Bottom Nav Bar (ไอคอนอยู่บน ตัวหนังสือเล็กอยู่ล่าง) */
+    .main-nav .nav-link {
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: center !important;
+        justify-content: center !important;
+        gap: 4px !important;
+        width: 60px !important;
+        height: 100% !important;
+        background: transparent !important;
+        border: none !important;
+        padding: 0 !important;
+        border-radius: 0 !important;
+    }
+
+    .main-nav .nav-link::after {
+        display: none !important;
+    }
+
+    /* แสดงผลไอคอนเฉพาะบนหน้าจอมือถือ */
+    .main-nav .nav-icon {
+        display: inline-block !important;
+        font-size: 20px !important;
+        color: #6e8494 !important;
+        transition: color 0.2s ease, transform 0.2s ease !important;
+    }
+
+    /* ปรับแต่งตัวอักษรกำกับใต้ไอคอน */
+    .main-nav .nav-text {
+        display: block !important;
+        font-size: 10px !important;
+        font-family: var(--font-heading) !important;
+        font-weight: 700 !important;
+        color: #6e8494 !important;
+        transition: color 0.2s ease !important;
+    }
+
+    /* สไตล์สีปุ่มเมนูที่กำลังเลือกอยู่ (Active State) */
+    .main-nav .nav-link.active .nav-icon {
+        color: var(--primary-cyan) !important;
+        transform: translateY(-2px) !important;
+    }
+
+    .main-nav .nav-link.active .nav-text {
+        color: var(--primary-cyan) !important;
+    }
+
+    .nav-icon-btn {
+        width: 40px;
+        height: 40px;
+        font-size: 16px;
+        border-radius: 10px;
+    }
+
+    .miku-logo {
+        height: 40px;
+        font-size: 14px;
+        padding: 0 12px;
+        border-radius: 10px;
+        margin-right: 0;
+    }
+
+    .login-btn,
+    .signup-btn {
+        padding: 8px 14px !important;
+        font-size: 13px !important;
+        height: 40px !important;
+        display: inline-flex !important;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .hero-banner {
+        flex-direction: column;
+        text-align: center;
+        padding: 32px 24px;
+    }
+
+    .banner-content {
+        max-width: 100%;
+        align-items: center;
+    }
+
+    .read-more-btn {
+        align-self: center;
+    }
+
+    .banner-slider-dots {
+        left: 50%;
+        transform: translateX(-50%);
+        bottom: 16px;
+    }
+
+    .hero-character-wrapper {
+        display: none;
+        /* Hide character on smaller mobile */
+    }
+
+    .channel-layout {
+        grid-template-columns: 1fr;
+    }
+
+    .stickers-container {
+        flex-direction: row;
+        justify-content: center;
+    }
+}
+
+/* Modal Overlay Styling */
+.modal-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(17, 117, 117, 0.15);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    z-index: 9999;
+    justify-content: center;
+    align-items: center;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.modal-overlay.active {
+    display: flex !important;
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.modal-content {
+    background-color: var(--bg-card);
+    border-radius: var(--border-radius-lg);
+    width: 90%;
+    max-width: 500px;
+    max-height: 80vh;
+    box-shadow: 0 30px 60px rgba(0, 0, 0, 0.12);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    border: 1.5px solid rgba(255, 255, 255, 0.7);
+    transform: scale(0.9) translateY(20px);
+    transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.modal-overlay.active .modal-content {
+    transform: scale(1) translateY(0);
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 24px 28px 16px;
+    border-bottom: 1.5px solid var(--bg-page);
+}
+
+.modal-header h2 {
+    font-family: var(--font-heading);
+    font-size: 22px;
+    font-weight: 800;
+    color: var(--text-main);
+    line-height: 1.4;
+}
+
+.modal-close-btn {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    border: none;
+    background-color: var(--bg-page);
+    color: var(--text-main);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    transition: var(--transition-smooth);
+}
+
+.modal-close-btn:hover {
+    background-color: var(--accent-pink-contrast);
+    color: #ffffff;
+    transform: rotate(90deg);
+}
+
+.modal-search-wrapper {
+    position: relative;
+    padding: 16px 28px;
+    border-bottom: 1.5px solid var(--bg-page);
+}
+
+.search-modal-icon {
+    position: absolute;
+    left: 44px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--text-muted);
+    font-size: 14px;
+}
+
+#member-search-input {
+    width: 100%;
+    height: 46px;
+    border-radius: var(--border-radius-sm);
+    border: 1.5px solid var(--bg-page);
+    background-color: var(--bg-page);
+    padding: 0 16px 0 44px;
+    font-family: var(--font-primary);
+    font-size: 15px;
+    color: var(--text-main);
+    outline: none;
+    transition: var(--transition-smooth);
+}
+
+#member-search-input:focus {
+    border-color: var(--primary-cyan);
+    background-color: #ffffff;
+    box-shadow: 0 0 0 4px rgba(17, 117, 117, 0.08);
+}
+
+.modal-body {
+    flex-grow: 1;
+    overflow-y: auto;
+    padding: 16px 28px 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    max-height: 50vh;
+}
+
+/* Custom Scrollbar for Modal Body */
+.modal-body::-webkit-scrollbar {
+    width: 6px;
+}
+
+.modal-body::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.modal-body::-webkit-scrollbar-thumb {
+    background: var(--pill-1);
+    border-radius: 3px;
+}
+
+.modal-body::-webkit-scrollbar-thumb:hover {
+    background: var(--primary-cyan);
+}
+
+.modal-member-row {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 10px 14px;
+    border-radius: var(--border-radius-sm);
+    background-color: #ffffff;
+    border: 1px solid rgba(0, 0, 0, 0.02);
+    transition: var(--transition-smooth);
+}
+
+.modal-member-row:hover {
+    background-color: var(--pill-1);
+    transform: translateX(4px);
+}
+
+.modal-member-avatar {
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    position: relative;
+    background-color: #f1f7f7;
+    flex-shrink: 0;
+}
+
+.modal-member-avatar img {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.modal-member-info {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    min-width: 0;
+}
+
+.modal-member-name {
+    font-family: var(--font-primary);
+    font-weight: 700;
+    font-size: 15px;
+    color: var(--text-main);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.modal-member-activity {
+    font-size: 12px;
+    color: var(--text-muted);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* Authentication Modal & Card Styling */
+.auth-card {
+    --input-focus: #4cb8b8;
+    --font-color: #323232;
+    --font-color-sub: #666;
+    --bg-color: beige;
+    --main-color: black;
+
+    max-width: 420px;
+    width: 90%;
+    padding: 20px;
+    background: lightblue;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    border-radius: 5px;
+    border: 2px solid var(--main-color);
+    box-shadow: 4px 4px var(--main-color);
+    overflow: visible;
+}
+
+.auth-tabs {
+    display: flex;
+    gap: 12px;
+}
+
+.auth-tab {
+    background-color: var(--bg-color);
+    border: 2px solid var(--main-color);
+    border-radius: 5px;
+    font-family: var(--font-heading);
+    font-size: 16px;
+    font-weight: 900;
+    color: var(--font-color);
+    cursor: pointer;
+    padding: 6px 12px;
+    box-shadow: 4px 4px var(--main-color);
+    transition: all 0.1s ease;
+}
+
+.auth-tab:active {
+    box-shadow: 0px 0px var(--main-color);
+    transform: translate(3px, 3px);
+}
+
+.auth-tab.active {
+    background-color: var(--input-focus);
+    color: #ffffff;
+}
+
+.auth-body {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    padding: 24px 28px;
+}
+
+/* Form inputs & elements */
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin-bottom: 14px;
+}
+
+.form-group label {
+    font-family: var(--font-primary);
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--text-muted);
+    letter-spacing: 0.3px;
+}
+
+.input-wrapper {
+    position: relative;
+    width: 100%;
+}
+
+.input-icon {
+    position: absolute;
+    left: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--text-muted);
+    font-size: 15px;
+    pointer-events: none;
+}
+
+.input-wrapper input {
+    width: 100%;
+    height: 40px;
+    border-radius: 5px;
+    border: 2px solid var(--main-color);
+    background-color: var(--bg-color);
+    box-shadow: 4px 4px var(--main-color);
+    font-family: var(--font-primary);
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--font-color);
+    padding: 5px 10px 5px 42px;
+    outline: none;
+    transition: all 0.1s ease;
+}
+
+.input-wrapper input::placeholder {
+    color: var(--font-color-sub);
+    opacity: 0.8;
+}
+
+.input-wrapper input:focus {
+    border: 2px solid var(--input-focus);
+    background-color: #ffffff;
+    box-shadow: 4px 4px var(--input-focus);
+}
+
+/* Alert Notification Panel */
+.auth-alert {
+    padding: 12px 16px;
+    border-radius: var(--border-radius-sm);
+    font-size: 14px;
+    font-weight: 600;
+    line-height: 1.4;
+    font-family: var(--font-primary);
+    animation: slideUpFade 0.3s ease both;
+}
+
+.auth-alert.error {
+    background-color: var(--accent-pink);
+    border: 1.5px solid var(--accent-pink-contrast);
+    color: var(--accent-pink-contrast);
+}
+
+.auth-alert.success {
+    background-color: rgba(46, 196, 182, 0.1);
+    border: 1.5px solid #1a7a71;
+    color: #1a7a71;
+}
+
+/* Submit & Extra Action buttons */
+.auth-submit-btn {
+    width: 100%;
+    height: 40px;
+    margin-top: 10px;
+    border-radius: 5px;
+    border: 2px solid var(--main-color);
+    background-color: var(--bg-color);
+    box-shadow: 4px 4px var(--main-color);
+    font-family: var(--font-heading);
+    font-size: 17px;
+    font-weight: 900;
+    color: var(--font-color);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    transition: all 0.1s ease;
+}
+
+.auth-submit-btn:active {
+    box-shadow: 0px 0px var(--main-color);
+    transform: translate(3px, 3px);
+}
+
+.auth-forgot-row {
+    text-align: right;
+    margin-top: -6px;
+}
+
+.auth-link {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--primary-cyan);
+    text-decoration: none;
+    transition: var(--transition-smooth);
+}
+
+.auth-link:hover {
+    color: var(--primary-cyan-hover);
+    text-decoration: underline;
+}
+
+.auth-separator {
+    display: flex;
+    align-items: center;
+    text-align: center;
+    color: var(--text-muted);
+    font-size: 12px;
+    font-weight: 600;
+    margin: 8px 0;
+}
+
+.auth-separator::before,
+.auth-separator::after {
+    content: '';
+    flex: 1;
+    border-bottom: 1.5px solid var(--bg-page);
+}
+
+.auth-separator:not(:empty)::before {
+    margin-right: .5em;
+}
+
+.auth-separator:not(:empty)::after {
+    margin-left: .5em;
+}
+
+.google-auth-btn {
+    width: 100%;
+    height: 40px;
+    border-radius: 5px;
+    border: 2px solid var(--main-color);
+    background-color: var(--bg-color);
+    box-shadow: 4px 4px var(--main-color);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 12px;
+    font-family: var(--font-primary);
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--font-color);
+    transition: all 0.1s ease;
+    cursor: pointer;
+}
+
+.google-auth-btn:active {
+    box-shadow: 0px 0px var(--main-color);
+    transform: translate(3px, 3px);
+}
+
+.google-icon {
+    width: 18px;
+    height: 18px;
+}
+
+.auth-card .modal-header {
+    border-bottom: 2px solid var(--main-color);
+    padding: 0 0 14px 0;
+}
+
+.auth-card .modal-close-btn {
+    border: 2px solid var(--main-color);
+    background-color: var(--bg-color);
+    box-shadow: 2px 2px var(--main-color);
+    border-radius: 5px;
+    width: 32px;
+    height: 32px;
+    transition: all 0.1s ease;
+}
+
+.auth-card .modal-close-btn:active {
+    box-shadow: 0px 0px var(--main-color);
+    transform: translate(2px, 2px);
+}
+
+.auth-card .modal-close-btn:hover {
+    background-color: var(--input-focus);
+    color: #ffffff;
+    transform: none;
+    /* disable rotation on hover for neobrutalist style */
+}
+
+.auth-body {
+    padding: 10px 0 0 0 !important;
+}
+
+/* User Profile Widget in Navigation Header */
+.user-profile-widget {
+    position: relative;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    background-color: #ffffff;
+    border: 1.5px solid var(--bg-page);
+    border-radius: var(--border-radius-sm);
+    padding: 4px 12px;
+    gap: 10px;
+    user-select: none;
+    transition: var(--transition-smooth);
+}
+
+.user-profile-widget:hover {
+    border-color: rgba(17, 117, 117, 0.3);
+    box-shadow: var(--shadow-soft);
+    transform: translateY(-1px);
+}
+
+.profile-avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid var(--primary-cyan);
+}
+
+.profile-avatar-initials {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background-color: var(--primary-cyan);
+    color: #ffffff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-family: var(--font-heading);
+    font-size: 15px;
+    font-weight: 800;
+    text-transform: uppercase;
+}
+
+.user-display-name {
+    font-family: var(--font-primary);
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--text-main);
+    max-width: 110px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.profile-dropdown-icon {
+    font-size: 12px;
+    color: var(--text-muted);
+    transition: var(--transition-smooth);
+}
+
+.user-profile-widget.active .profile-dropdown-icon {
+    transform: rotate(180deg);
+}
+
+/* Profile Dropdown Menu */
+.profile-dropdown-menu {
+    position: absolute;
+    top: calc(100% + 8px);
+    right: 0;
+    background-color: #ffffff;
+    border: 1.5px solid var(--bg-page);
+    border-radius: var(--border-radius-sm);
+    width: 220px;
+    box-shadow: var(--shadow-medium);
+    display: none;
+    flex-direction: column;
+    padding: 8px 0;
+    z-index: 99999;
+    animation: slideUpFade 0.3s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.user-profile-widget.active .profile-dropdown-menu {
+    display: flex;
+}
+
+.menu-item-info {
+    padding: 12px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.menu-user-name {
+    font-family: var(--font-heading);
+    font-size: 15px;
+    font-weight: 800;
+    color: var(--text-main);
+}
+
+.menu-user-email {
+    font-family: var(--font-primary);
+    font-size: 12px;
+    color: var(--text-muted);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.menu-divider {
+    border: none;
+    border-top: 1.5px solid var(--bg-page);
+    margin: 6px 0;
+}
+
+.dropdown-item {
+    background: none;
+    border: none;
+    width: 100%;
+    text-align: left;
+    padding: 10px 16px;
+    font-family: var(--font-primary);
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--text-main);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+    transition: var(--transition-smooth);
+}
+
+.dropdown-item:hover {
+    background-color: var(--bg-page);
+}
+
+.dropdown-item.logout-btn {
+    color: var(--accent-pink-contrast);
+}
+
+.dropdown-item.logout-btn:hover {
+    background-color: var(--accent-pink);
+}
+
+/* Animations definition */
+@keyframes slideUpFade {
+    0% {
+        opacity: 0;
+        transform: translateY(8px);
+    }
+
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* พื้นที่เนื้อหาหลักของหน้าแรก */
+#home-section {
+    max-width: 1100px;
+    width: 100%;
+    margin: 16px auto 0;
+    /* ขยับพื้นที่หน้าแรกลงล่างเล็กน้อยเพื่อเว้นระยะไม่ให้แบนเนอร์ชนแถบเมนู */
+    padding: 0 40px;
+}
+
+@media (max-width: 768px) {
+    #home-section {
+        padding: 0 20px;
+    }
+}
+
+/* 2. Glassmorphic Toast Notifications */
+.toast-container {
+    position: fixed;
+    top: 24px;
+    right: 24px;
+    z-index: 10000;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    pointer-events: none;
+}
+
+.miku-toast {
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1.5px solid var(--primary-cyan);
+    border-radius: var(--border-radius-md);
+    box-shadow: 0 10px 40px rgba(0, 242, 254, 0.15);
+    color: var(--text-main);
+    padding: 16px 20px;
+    font-family: var(--font-primary);
+    font-weight: 700;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-width: 320px;
+    max-width: 450px;
+    transform: translateX(120%);
+    transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.3s ease;
+    opacity: 0;
+    pointer-events: auto;
+}
+
+.miku-toast.show {
+    transform: translateX(0);
+    opacity: 1;
+}
+
+/* Accessibility Skip Link */
+.skip-link {
+    position: absolute;
+    top: -100px;
+    left: 16px;
+    background: var(--primary-cyan);
+    color: #ffffff;
+    padding: 10px 20px;
+    z-index: 100000;
+    transition: top 0.2s ease;
+    font-weight: 700;
+    font-family: var(--font-heading);
+    border-radius: 0 0 12px 12px;
+    box-shadow: var(--shadow-strong);
+    text-decoration: none;
+}
+
+.skip-link:focus {
+    top: 0;
+    outline: 2px solid var(--primary-cyan-hover);
+    outline-offset: 2px;
+}
+
+/* Premium Notification dropdown animations and elements */
+.notification-dropdown {
+    animation: slideDownNotification 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes slideDownNotification {
+    from {
+        opacity: 0;
+        transform: translateY(10px) scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+/* Styles for notification elements scroll bar */
+.notification-dropdown-list::-webkit-scrollbar {
+    width: 6px;
+}
+.notification-dropdown-list::-webkit-scrollbar-track {
+    background: transparent;
+}
+.notification-dropdown-list::-webkit-scrollbar-thumb {
+    background: #ccc;
+    border-radius: 4px;
+}
+.notification-dropdown-list::-webkit-scrollbar-thumb:hover {
+    background: #bbb;
+}

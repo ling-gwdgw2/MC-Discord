@@ -1,0 +1,13 @@
+{
+  "scripts": {
+    "dev": "npx -y http-server -c-1 -p 3000",
+    "deploy": "wrangler deploy",
+    "preview": "wrangler dev"
+  },
+  "dependencies": {
+    "firebase": "^12.15.0"
+  },
+  "devDependencies": {
+    "wrangler": "^4.107.0"
+  }
+}
