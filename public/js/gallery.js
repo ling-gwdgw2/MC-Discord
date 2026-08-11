@@ -204,27 +204,7 @@ async function uploadFileToR2(rawFile, type = 'post', progressCallback) {
     }
 
     let file = rawFile;
-    if (rawFile.type.startsWith('image/')) {
-        try {
-            if (progressCallback) progressCallback("Optimizing image...");
-            const maxW = type === 'avatar' ? 400 : 1920;
-            const maxH = type === 'avatar' ? 400 : 1080;
-            file = await compressImage(rawFile, maxW, maxH);
-        } catch (e) {
-            console.warn("Image compression failed, uploading original:", e);
-        }
-    } else if (rawFile.type.startsWith('video/')) {
-        try {
-            if (progressCallback) progressCallback("Compressing video...");
-            file = await compressVideo(rawFile, (statusText) => {
-                if (progressCallback && typeof statusText === 'string') {
-                    progressCallback(statusText);
-                }
-            });
-        } catch (e) {
-            console.warn("Video compression failed, uploading original:", e);
-        }
-    }
+    // Client-side compression bypassed per configuration; uploading rawFile directly up to 500MB limit
 
     const idToken = await currentUser.getIdToken();
 
