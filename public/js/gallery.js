@@ -1,7 +1,7 @@
 // Gallery Client-Side Script สคริปต์ควบคุมการทำงานหน้าแกลเลอรีฝั่งผู้ใช้
 
-// Helper function to compress image client-side to WebP format ฟังก์ชันบีบอัดรูปภาพฝั่งผู้ใช้ให้เป็นฟอร์แมต WebP
-function compressImage(file, maxWidth = 1600, maxHeight = 1600) {
+// Helper function to compress image client-side to WebP format (1080 Full HD max)
+function compressImage(file, maxWidth = 1920, maxHeight = 1080) {
     return new Promise((resolve, reject) => {
         if (!file.type.startsWith('image/')) {
             resolve(file);
@@ -201,8 +201,9 @@ async function uploadFileToR2(rawFile, type = 'post', progressCallback) {
     if (rawFile.type.startsWith('image/')) {
         try {
             if (progressCallback) progressCallback("Optimizing image...");
-            const maxDim = type === 'avatar' ? 400 : 1600;
-            file = await compressImage(rawFile, maxDim, maxDim);
+            const maxW = type === 'avatar' ? 400 : 1920;
+            const maxH = type === 'avatar' ? 400 : 1080;
+            file = await compressImage(rawFile, maxW, maxH);
         } catch (e) {
             console.warn("Image compression failed, uploading original:", e);
         }
