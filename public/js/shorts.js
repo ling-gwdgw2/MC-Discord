@@ -2,6 +2,13 @@
 
 let loadedShortsList = [];
 let activeVideoElement = null;
+let shortsCursor = null;
+let isFetchingShorts = false;
+let hasMoreShorts = true;
+
+let autoplayObserver = null;
+let virtualizationObserver = null;
+let infiniteScrollObserver = null;
 
 window.addEventListener('DOMContentLoaded', () => {
     // Initial Auth State and Posts load
@@ -48,6 +55,12 @@ async function loadShortsFeed() {
     const feedContainer = document.getElementById('shorts-feed-container');
     if (!feedContainer) return;
 
+    // Reset pagination state
+    shortsCursor = null;
+    isFetchingShorts = false;
+    hasMoreShorts = true;
+    loadedShortsList = [];
+
     try {
         const headers = {};
         const currentUser = firebase.auth().currentUser;
@@ -56,8 +69,8 @@ async function loadShortsFeed() {
             headers['Authorization'] = `Bearer ${idToken}`;
         }
 
-        // Fetch all video posts from Cloudflare Worker
-        const res = await fetch(`${WORKER_URL}/posts?limit=50`, { headers });
+        // Fetch initial batch of 10 video posts sorted by Rule-Based Hot Score
+        const res = await fetch(`${WORKER_URL}/posts?limit=10&sort=hot`, { headers });
         if (!res.ok) throw new Error("Failed to fetch posts for Shorts reel");
         
         const resData = await res.json();
@@ -69,6 +82,30 @@ async function loadShortsFeed() {
             return url.endsWith('.mp4') || url.endsWith('.webm');
         });
 
+        // Parse target post ID from URL parameters (e.g. shorts.html?post=ID)
+        const urlParams = new URLSearchParams(window.location.search);
+        const targetPostId = urlParams.get('post') || urlParams.get('postId') || urlParams.get('id');
+
+        if (targetPostId) {
+            const targetIndex = loadedShortsList.findIndex(p => p.id === targetPostId);
+            if (targetIndex > 0) {
+                const [targetPost] = loadedShortsList.splice(targetIndex, 1);
+                loadedShortsList.unshift(targetPost);
+            } else if (targetIndex === -1) {
+                try {
+                    const singleRes = await fetch(`${WORKER_URL}/posts?postId=${encodeURIComponent(targetPostId)}`, { headers });
+                    if (singleRes.ok) {
+                        const singleData = await singleRes.json();
+                        if (singleData.success && singleData.post) {
+                            loadedShortsList.unshift(singleData.post);
+                        }
+                    }
+                } catch (singleErr) {
+                    console.warn("Failed to fetch target post for Shorts reel:", singleErr);
+                }
+            }
+        }
+
         feedContainer.innerHTML = '';
 
         if (loadedShortsList.length === 0) {
@@ -77,11 +114,14 @@ async function loadShortsFeed() {
                     <i class="fa-solid fa-film" style="font-size: 48px; color: var(--primary-cyan); margin-bottom: 16px;"></i>
                     <h2 style="margin-bottom: 8px;">ยังไม่มี Shorts ในขณะนี้</h2>
                     <p style="color: rgba(255,255,255,0.7); max-width: 400px; margin-bottom: 20px;">ร่วมแชร์วิดีโอคลิปสั้นของคุณเพื่อรับชมคลิปบนหน้า Shorts Reel ได้ก่อนใคร!</p>
-                    <a href="gallery.html?action=create" class="btn btn-solid" style="background: var(--primary-cyan); border: none; border-radius: 20px; color: #ffffff;">แชร์คลิปวิดีโอแรกเลย 🎬</a>
+                    <a href="gallery.html?action=create" class="btn btn-solid" style="background: var(--primary-cyan); border: none; border-radius: 20px; color: #ffffff;">แชร์คลิปวิดีโอแรกเลย</a>
                 </div>
             `;
             return;
         }
+
+        // Set cursor to the last post's timestamp
+        shortsCursor = loadedShortsList[loadedShortsList.length - 1].createdAt;
 
         // Render each Shorts reel item
         loadedShortsList.forEach((post, index) => {
@@ -89,8 +129,15 @@ async function loadShortsFeed() {
             feedContainer.appendChild(reelItem);
         });
 
-        // Setup Intersection Observer for Vertical Video Auto-play
-        setupShortsIntersectionObserver();
+        // Append infinite scroll loading sentinel
+        const sentinel = document.createElement('div');
+        sentinel.id = 'shorts-loading-sentinel';
+        sentinel.className = 'shorts-loading-sentinel';
+        sentinel.innerHTML = `<div class="shorts-loading-spinner"></div>`;
+        feedContainer.appendChild(sentinel);
+
+        // Setup Virtualization and Autoplay Observers
+        setupShortsObservers();
 
     } catch (err) {
         console.error("Shorts feed error:", err);
@@ -102,6 +149,67 @@ async function loadShortsFeed() {
                 </div>
             `;
         }
+    }
+}
+
+async function fetchMoreShorts() {
+    if (isFetchingShorts || !hasMoreShorts) return;
+    isFetchingShorts = true;
+
+    const feedContainer = document.getElementById('shorts-feed-container');
+    const sentinel = document.getElementById('shorts-loading-sentinel');
+    if (sentinel) sentinel.style.display = 'flex';
+
+    try {
+        const headers = {};
+        const currentUser = firebase.auth().currentUser;
+        if (currentUser) {
+            const idToken = await currentUser.getIdToken();
+            headers['Authorization'] = `Bearer ${idToken}`;
+        }
+
+        const cursorQuery = shortsCursor ? `&cursor=${shortsCursor}` : '';
+        const res = await fetch(`${WORKER_URL}/posts?limit=10&sort=hot${cursorQuery}`, { headers });
+        if (!res.ok) throw new Error("Failed to fetch more shorts");
+
+        const resData = await res.json();
+        const posts = resData.posts || [];
+        const videoPosts = posts.filter(p => {
+            const url = (p.imageUrl || '').toLowerCase();
+            return (url.endsWith('.mp4') || url.endsWith('.webm')) && !loadedShortsList.some(existing => existing.id === p.id);
+        });
+
+        if (videoPosts.length === 0) {
+            hasMoreShorts = false;
+            if (sentinel) sentinel.style.display = 'none';
+            isFetchingShorts = false;
+            return;
+        }
+
+        const startIndex = loadedShortsList.length;
+        videoPosts.forEach((post, i) => {
+            loadedShortsList.push(post);
+            const index = startIndex + i;
+            const reelItem = createShortsReelItem(post, index);
+            if (sentinel) {
+                feedContainer.insertBefore(reelItem, sentinel);
+            } else {
+                feedContainer.appendChild(reelItem);
+            }
+            if (autoplayObserver) autoplayObserver.observe(reelItem);
+            if (virtualizationObserver) virtualizationObserver.observe(reelItem);
+        });
+
+        shortsCursor = videoPosts[videoPosts.length - 1].createdAt;
+
+        if (videoPosts.length < 10) {
+            hasMoreShorts = false;
+            if (sentinel) sentinel.style.display = 'none';
+        }
+    } catch (err) {
+        console.error("Error fetching more shorts:", err);
+    } finally {
+        isFetchingShorts = false;
     }
 }
 
@@ -128,6 +236,8 @@ function createShortsReelItem(post, index) {
         authorAvatarHtml = `<div class="lightbox-author-initials">${initials}</div>`;
     }
 
+    const initialSrcAttr = index < 2 ? `src="${escapeHtml(post.imageUrl)}"` : '';
+
     const canDownload = post.allowDownload === 1 || (currentUser && currentUser.uid === post.authorId);
     const saveBtnHtml = canDownload 
         ? `<button class="shorts-action-btn shorts-save-btn" title="ดาวน์โหลดวิดีโอ">
@@ -137,7 +247,7 @@ function createShortsReelItem(post, index) {
 
     item.innerHTML = `
         <div class="shorts-player-frame">
-            <video src="${escapeHtml(post.imageUrl)}" class="shorts-media-element" id="shorts-video-${index}" loop playsinline></video>
+            <video data-src="${escapeHtml(post.imageUrl)}" ${initialSrcAttr} class="shorts-media-element" id="shorts-video-${index}" loop playsinline></video>
             
             <div class="shorts-gradient-overlay"></div>
 
@@ -171,51 +281,40 @@ function createShortsReelItem(post, index) {
                     <button class="shorts-action-btn shorts-comment-btn">
                         <i class="fa-regular fa-comment-dots"></i>
                     </button>
-                    <span class="shorts-action-count">ความคิดเห็น</span>
                 </div>
 
                 <div class="shorts-action-item">
                     <button class="shorts-action-btn shorts-share-btn">
                         <i class="fa-solid fa-share"></i>
                     </button>
-                    <span class="shorts-action-count">แชร์</span>
-                </div>
-
-                <div class="shorts-action-item">
-                    <button class="shorts-action-btn shorts-sound-btn">
-                        <i class="fa-solid fa-volume-high"></i>
-                    </button>
                 </div>
 
                 ${saveBtnHtml ? `<div class="shorts-action-item">${saveBtnHtml}</div>` : ''}
             </div>
 
-            <!-- Comment Drawer -->
+            <!-- Comments Drawer Modal -->
             <div class="shorts-comments-drawer" style="display: none;">
                 <div class="shorts-drawer-header">
-                    <h3>ความคิดเห็น (Comments)</h3>
-                    <button class="shorts-drawer-close-btn"><i class="fa-solid fa-xmark"></i></button>
+                    <h3>ความคิดเห็น</h3>
+                    <button class="shorts-drawer-close-btn">&times;</button>
                 </div>
-                <div class="lightbox-comments-list" style="flex: 1; overflow-y: auto; padding: 10px 0;">
-                    <div style="font-style: italic; color: #888;">ไม่มีความคิดเห็นในขณะนี้ เริ่มการสนทนาเลย!</div>
-                </div>
-                <div class="lightbox-comment-input-row" style="display: flex; gap: 8px; margin-top: 8px;">
-                    <input type="text" class="lightbox-comment-input" placeholder="ใส่ความคิดเห็น..." style="flex: 1; padding: 8px 12px; border-radius: 20px; border: 1px solid #ccc;">
+                <div class="shorts-drawer-body">
+                    <p style="color: #666; text-align: center; margin-top: 20px;">ระบบความคิดเห็นสำหรับ Shorts เร็วๆ นี้</p>
                 </div>
             </div>
         </div>
     `;
 
-    // Event Bindings for player controls
     const videoEl = item.querySelector('video');
     const backBtn = item.querySelector('.shorts-back-btn');
-    const soundBtn = item.querySelector('.shorts-sound-btn');
     const likeBtn = item.querySelector('.post-card-like-btn');
-    const dislikeBtn = item.querySelector('.shorts-dislike-btn');
     const shareBtn = item.querySelector('.shorts-share-btn');
     const commentBtn = item.querySelector('.shorts-comment-btn');
     const commentDrawer = item.querySelector('.shorts-comments-drawer');
     const drawerCloseBtn = item.querySelector('.shorts-drawer-close-btn');
+
+    // Player frame container
+    const frame = item.querySelector('.shorts-player-frame');
 
     if (backBtn) {
         backBtn.addEventListener('click', (e) => {
@@ -228,9 +327,38 @@ function createShortsReelItem(post, index) {
         });
     }
 
-    // Click on video frame to Play / Pause
-    const frame = item.querySelector('.shorts-player-frame');
+    // Dynamic Aspect-Ratio & Boundary Calculator
     if (frame && videoEl) {
+        const applyDynamicLayout = () => {
+            if (videoEl.videoWidth && videoEl.videoHeight) {
+                const w = videoEl.videoWidth;
+                const h = videoEl.videoHeight;
+                const aspect = w / h;
+                
+                frame.style.aspectRatio = `${w} / ${h}`;
+                
+                if (aspect > 1.2) {
+                    frame.style.height = 'auto';
+                    frame.style.width = 'min(calc(100vw - 320px), 800px)';
+                    frame.style.maxHeight = 'calc(100vh - 100px)';
+                } else if (aspect >= 0.8 && aspect <= 1.2) {
+                    frame.style.height = 'auto';
+                    frame.style.width = 'min(calc(100vw - 320px), 580px)';
+                    frame.style.maxHeight = 'calc(100vh - 80px)';
+                } else {
+                    frame.style.height = '100%';
+                    frame.style.width = 'auto';
+                    frame.style.maxHeight = 'calc(100vh - 40px)';
+                }
+            }
+        };
+
+        if (videoEl.readyState >= 1) {
+            applyDynamicLayout();
+        } else {
+            videoEl.addEventListener('loadedmetadata', applyDynamicLayout);
+        }
+
         frame.addEventListener('click', (e) => {
             if (e.target.closest('.shorts-action-btn') || e.target.closest('.shorts-back-btn') || e.target.closest('.shorts-subscribe-btn') || e.target.closest('.shorts-comments-drawer')) return;
             if (videoEl.paused) {
@@ -241,39 +369,46 @@ function createShortsReelItem(post, index) {
         });
     }
 
-    // Toggle Sound (Mute / Unmute)
-    if (soundBtn && videoEl) {
-        soundBtn.addEventListener('click', (e) => {
-            e.stopPropagation();
-            videoEl.muted = !videoEl.muted;
-            const icon = soundBtn.querySelector('i');
-            if (icon) {
-                icon.className = videoEl.muted ? 'fa-solid fa-volume-xmark' : 'fa-solid fa-volume-high';
-            }
-            showMikuToast(videoEl.muted ? "ปิดเสียงวิดีโอแล้ว 🔇" : "เปิดเสียงวิดีโอ 🔊", "info");
-        });
-    }
-
     // Toggle Like
     if (likeBtn) {
         likeBtn.addEventListener('click', async (e) => {
             e.stopPropagation();
-            if (typeof toggleLike === 'function') {
-                await toggleLike(post.id, e);
+            const currentUser = firebase.auth().currentUser;
+            if (!currentUser) {
+                openAuthModal('login');
+                showMikuToast("กรุณาเข้าสู่ระบบเพื่อกดไลก์!", "error");
+                return;
             }
-        });
-    }
 
-    // Dislike Button
-    if (dislikeBtn) {
-        dislikeBtn.addEventListener('click', (e) => {
-            e.stopPropagation();
-            const icon = dislikeBtn.querySelector('i');
-            const isDisliked = dislikeBtn.classList.toggle('disliked');
-            if (icon) {
-                icon.className = isDisliked ? 'fa-solid fa-thumbs-down' : 'fa-regular fa-thumbs-down';
+            try {
+                const idToken = await currentUser.getIdToken();
+                const res = await fetch(`${WORKER_URL}/posts/like`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${idToken}`
+                    },
+                    body: JSON.stringify({ postId: post.id })
+                });
+
+                if (!res.ok) throw new Error("Like operation failed");
+                const data = await res.json();
+
+                const isNowLiked = data.liked;
+                const newCount = data.likesCount;
+
+                likeBtn.classList.toggle('liked', isNowLiked);
+                const icon = likeBtn.querySelector('i');
+                if (icon) {
+                    icon.className = isNowLiked ? 'fa-solid fa-heart' : 'fa-regular fa-heart';
+                }
+                const countSpan = item.querySelector('.shorts-action-count');
+                if (countSpan) countSpan.textContent = newCount;
+
+            } catch (err) {
+                console.error("Like error:", err);
+                showMikuToast("ไม่สามารถกดไลก์ได้ในขณะนี้", "error");
             }
-            showMikuToast("ขอบคุณสำหรับข้อเสนอแนะของคุณ! 🙏", "success");
         });
     }
 
@@ -283,7 +418,7 @@ function createShortsReelItem(post, index) {
             e.stopPropagation();
             const shareUrl = `${window.location.origin}/shorts.html?post=${post.id}`;
             navigator.clipboard.writeText(shareUrl).then(() => {
-                showMikuToast("คัดลอกลิงก์แชร์ Shorts แล้ว! 📋", "success");
+                showMikuToast("คัดลอกลิงก์แชร์ Shorts แล้ว!", "success");
             }).catch(() => {
                 showMikuToast("ไม่สามารถคัดลอกลิงก์ได้", "error");
             });
@@ -309,21 +444,50 @@ function createShortsReelItem(post, index) {
     return item;
 }
 
-function setupShortsIntersectionObserver() {
-    const items = document.querySelectorAll('.shorts-reel-item');
-    const observer = new IntersectionObserver((entries) => {
+function setupShortsObservers() {
+    // 1. Virtualization Observer (Unmount video src outside 150% viewport margin to purge RAM decoders)
+    if (virtualizationObserver) virtualizationObserver.disconnect();
+    virtualizationObserver = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
             const video = entry.target.querySelector('video');
             if (!video) return;
 
             if (entry.isIntersecting) {
-                // Pause previously active video
+                if (!video.getAttribute('src') && video.dataset.src) {
+                    video.setAttribute('src', video.dataset.src);
+                    video.load();
+                }
+            } else {
+                if (video.hasAttribute('src')) {
+                    video.pause();
+                    video.removeAttribute('src');
+                    video.load();
+                }
+            }
+        });
+    }, {
+        threshold: 0,
+        rootMargin: '150% 0px 150% 0px'
+    });
+
+    // 2. Autoplay Observer (Trigger play/pause on 60% visibility)
+    if (autoplayObserver) autoplayObserver.disconnect();
+    autoplayObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            const video = entry.target.querySelector('video');
+            if (!video) return;
+
+            if (entry.isIntersecting) {
+                if (!video.getAttribute('src') && video.dataset.src) {
+                    video.setAttribute('src', video.dataset.src);
+                    video.load();
+                }
+
                 if (activeVideoElement && activeVideoElement !== video) {
                     activeVideoElement.pause();
                 }
                 activeVideoElement = video;
                 
-                // Attempt to play unmuted video first, fallback to muted if browser blocks unmuted autoplay
                 video.play().catch(() => {
                     video.muted = true;
                     const soundBtn = entry.target.querySelector('.shorts-sound-btn i');
@@ -338,5 +502,28 @@ function setupShortsIntersectionObserver() {
         threshold: 0.6 // Video must be >60% visible to trigger autoplay
     });
 
-    items.forEach(item => observer.observe(item));
+    // 3. Infinite Scroll Observer (Triggers fetchMoreShorts when scrolling near bottom sentinel)
+    if (infiniteScrollObserver) infiniteScrollObserver.disconnect();
+    infiniteScrollObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                fetchMoreShorts();
+            }
+        });
+    }, {
+        threshold: 0.1
+    });
+
+    // Attach virtualization and autoplay observers to existing reel items
+    const items = document.querySelectorAll('.shorts-reel-item');
+    items.forEach(item => {
+        virtualizationObserver.observe(item);
+        autoplayObserver.observe(item);
+    });
+
+    // Attach infinite scroll observer to sentinel
+    const sentinel = document.getElementById('shorts-loading-sentinel');
+    if (sentinel) {
+        infiniteScrollObserver.observe(sentinel);
+    }
 }

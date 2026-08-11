@@ -235,7 +235,7 @@ window.addEventListener('DOMContentLoaded', () => {
             // Check authentication status first as Following feed requires login
             const currentUser = firebase.auth().currentUser;
             if (!currentUser) {
-                showMikuToast("กรุณาเข้าสู่ระบบเพื่อใช้งานฟีดติดตาม 🌸", "info");
+                showMikuToast("กรุณาเข้าสู่ระบบเพื่อใช้งานฟีดติดตาม", "info");
                 openAuthModal('login');
                 return;
             }
@@ -268,6 +268,7 @@ window.addEventListener('DOMContentLoaded', () => {
 
     const gallerySortSelect = document.getElementById('gallery-sort-select');
     if (gallerySortSelect) {
+        currentSortOrder = gallerySortSelect.value || 'hot';
         gallerySortSelect.addEventListener('change', (e) => {
             currentSortOrder = e.target.value;
             loadPosts(false);
@@ -953,7 +954,7 @@ function openLightbox(postData) {
             e.stopPropagation();
             const shareUrl = `${window.location.origin}/gallery.html?post=${postData.id}`;
             navigator.clipboard.writeText(shareUrl).then(() => {
-                showMikuToast("คัดลอกลิงก์แชร์ไปยังคลิปบอร์ดแล้ว! 📋", "success");
+                showMikuToast("คัดลอกลิงก์แชร์ไปยังคลิปบอร์ดแล้ว!", "success");
             }).catch(err => {
                 console.error("Copy error:", err);
                 showMikuToast("ไม่สามารถคัดลอกลิงก์ได้", "error");
@@ -1013,7 +1014,7 @@ function openLightbox(postData) {
                 a.click();
                 window.URL.revokeObjectURL(url);
                 a.remove();
-                showMikuToast("บันทึกภาพสำเร็จ! 💾", "success");
+                showMikuToast("บันทึกภาพสำเร็จ!", "success");
             } catch (err) {
                 console.error("CORS Blob download error, falling back to window.open:", err);
                 const a = document.createElement('a');
@@ -1042,7 +1043,7 @@ function openLightbox(postData) {
                     deletePost(postData.id, postData.imageUrl);
                 }
             } else {
-                showMikuToast("แจ้งรายงานภาพนี้เรียบร้อยแล้ว ขอบคุณที่ช่วยดูแลระบบ! 🛡️", "success");
+                showMikuToast("แจ้งรายงานภาพนี้เรียบร้อยแล้ว ขอบคุณที่ช่วยดูแลระบบ!", "success");
             }
         });
     }
@@ -1268,7 +1269,7 @@ function openLightbox(postData) {
                     activeReplyParentId = null;
                     replyToName = "";
                     
-                    showMikuToast("ส่งความคิดเห็นแล้ว! 💬", "success");
+                    showMikuToast("ส่งความคิดเห็นแล้ว!", "success");
                     await fetchAndRenderComments();
                 } catch (err) {
                     console.error("Error posting comment:", err);
@@ -1297,7 +1298,7 @@ const POSTS_PER_PAGE = 30;
 // Global feed memory cache to allow Lightbox navigation
 let loadedPostsList = [];
 let currentSearchQuery = '';
-let currentSortOrder = 'date';
+let currentSortOrder = 'hot';
 let hasMorePosts = true;
 
 // Dynamic Grid Virtualization Observer to free browser memory/RAM for off-screen images ตัวจัดการสลับภาพออกเพื่อประหยัด RAM บนเบราว์เซอร์
@@ -1817,7 +1818,12 @@ async function loadPosts(append = false) {
             let mediaHtml = '';
             if (isVideo) {
                 mediaHtml = `
-                    <video src="${escapedImageUrl}" data-src="${escapedImageUrl}" class="post-card-img" style="width: 100%; border-radius: 0.8em;" controls loop muted playsinline></video>
+                    <div class="video-cover-container">
+                        <video src="${escapedImageUrl}#t=0.1" preload="metadata" class="post-card-img video-cover-element" muted playsinline></video>
+                        <div class="video-play-badge">
+                            <i class="fa-solid fa-play"></i>
+                        </div>
+                    </div>
                 `;
             } else {
                 mediaHtml = `

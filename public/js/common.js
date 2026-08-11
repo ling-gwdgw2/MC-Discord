@@ -546,11 +546,11 @@ async function fetchNotifications(user) {
             // Notification message mapping
             let actionText = '';
             if (item.type === 'follow') {
-                actionText = `ได้เริ่มติดตามคุณแล้ว! 🌸`;
+                actionText = `ได้เริ่มติดตามคุณแล้ว!`;
             } else if (item.type === 'like') {
-                actionText = `ถูกใจรูปภาพของคุณ! ❤️`;
+                actionText = `ถูกใจรูปภาพของคุณ!`;
             } else if (item.type === 'comment') {
-                actionText = `แสดงความคิดเห็นต่อภาพของคุณ! 💬`;
+                actionText = `แสดงความคิดเห็นต่อภาพของคุณ!`;
             }
             
             row.innerHTML = `

@@ -215,9 +215,10 @@ export default {
         const authorId = url.searchParams.get("authorId");
         const sort = url.searchParams.get("sort");
         const q = url.searchParams.get("q");
+        const sortMode = sort || "hot";
         
         // Scope cache key by user UID or guest to prevent private posts leaking via cache poisoning
-        const cacheKey = `posts:feed:${authorId || "all"}:${cursor || "none"}:${limit}:${sort || "date"}:${q || "none"}:${uid || "guest"}`;
+        const cacheKey = `posts:feed:${authorId || "all"}:${cursor || "none"}:${limit}:${sortMode}:${q || "none"}:${uid || "guest"}`;
         if (env.CACHE) {
           try {
             const cachedData = await env.CACHE.get(cacheKey);
@@ -235,7 +236,8 @@ export default {
         let query = `
           SELECT p.*, 
                  (SELECT json_group_array(userId) FROM post_likes WHERE postId = p.id AND userId IS NOT NULL) as likes,
-                 (SELECT COUNT(*) FROM post_likes WHERE postId = p.id) as likes_count
+                 (SELECT COUNT(*) FROM post_likes WHERE postId = p.id) as likes_count,
+                 (SELECT COUNT(*) FROM comments WHERE postId = p.id) as comments_count
           FROM posts p
         `;
         const params = [];
@@ -270,10 +272,16 @@ export default {
           query += ` WHERE ` + conditions.join(` AND `);
         }
         
-        if (sort === "likes") {
+        if (sortMode === "likes") {
           query += ` ORDER BY likes_count DESC, p.createdAt DESC LIMIT ? `;
-        } else {
+        } else if (sortMode === "newest" || sortMode === "date") {
           query += ` ORDER BY p.createdAt DESC LIMIT ? `;
+        } else {
+          // Rule-Based Hot Score: LOG10(MAX(1, Likes*3 + Comments*5)) + (createdAt / 45,000,000.0)
+          query += ` ORDER BY (
+            LOG10(MAX(1, (SELECT COUNT(*) FROM post_likes WHERE postId = p.id) * 3 + (SELECT COUNT(*) FROM comments WHERE postId = p.id) * 5)) + 
+            (p.createdAt / 45000000.0)
+          ) DESC, p.createdAt DESC LIMIT ? `;
         }
         params.push(limit);
         
@@ -290,6 +298,8 @@ export default {
           authorName: row.authorName,
           authorAvatar: row.authorAvatar,
           createdAt: row.createdAt,
+          likesCount: row.likes_count || 0,
+          commentsCount: row.comments_count || 0,
           likes: JSON.parse(row.likes || "[]").filter(x => x !== null)
         }));
         
@@ -568,6 +578,7 @@ export default {
         });
 
       } else if (request.method === "POST" && url.pathname === "/upload") {
+        const contentType = request.headers.get("Content-Type") || "application/octet-stream";
         const rawFilename = request.headers.get("X-Filename") || "file";
         let clientFilename = rawFilename;
         try {

@@ -59,7 +59,7 @@ document.addEventListener('DOMContentLoaded', () => {
         btnShareProfile.addEventListener('click', () => {
             const profileUrl = window.location.origin + window.location.pathname + window.location.search;
             navigator.clipboard.writeText(profileUrl).then(() => {
-                showMikuToast("คัดลอกลิงก์โปรไฟล์แล้ว! 🔗", "success");
+                showMikuToast("คัดลอกลิงก์โปรไฟล์แล้ว!", "success");
             }).catch(() => {
                 showMikuToast("ไม่สามารถคัดลอกลิงก์ได้อัตโนมัติ", "error");
             });
@@ -240,7 +240,7 @@ function initFollowButton(targetUid, currentUser, followBtn) {
                 updateBtnState();
                 
                 if (isFollowing) {
-                    showMikuToast("ติดตามผู้ใช้นี้เรียบร้อยแล้ว! 🌸", "success");
+                    showMikuToast("ติดตามผู้ใช้นี้เรียบร้อยแล้ว!", "success");
                 } else {
                     showMikuToast("ยกเลิกการติดตามแล้ว", "info");
                 }
@@ -261,7 +261,7 @@ function initFollowButton(targetUid, currentUser, followBtn) {
             } else {
                 follows.push(targetUid);
                 isFollowing = true;
-                showMikuToast("ติดตามผู้ใช้นี้เรียบร้อยแล้ว! 🌸 (Offline)", "success");
+                showMikuToast("ติดตามผู้ใช้นี้เรียบร้อยแล้ว! (Offline)", "success");
             }
             saveLocalFollows(follows);
             updateBtnState();
@@ -461,10 +461,22 @@ async function loadProfilePosts(targetUid = null) {
             
             const escapedImageUrl = escapeHtml(data.imageUrl || '');
             const escapedCaption = escapeHtml(data.caption || '');
+            const isVideo = escapedImageUrl.toLowerCase().endsWith('.mp4') || escapedImageUrl.toLowerCase().endsWith('.webm');
+            
+            const mediaHtml = isVideo ? `
+                <div class="video-cover-container">
+                    <video src="${escapedImageUrl}#t=0.1" preload="metadata" class="post-card-img video-cover-element" muted playsinline></video>
+                    <div class="video-play-badge">
+                        <i class="fa-solid fa-play"></i>
+                    </div>
+                </div>
+            ` : `
+                <img src="${escapedImageUrl}" alt="Profile Post Photo" class="post-card-img" onerror="this.src='assets/logo_02.webp'" loading="lazy">
+            `;
             
             card.innerHTML = `
                 <div class="post-card-img-wrapper">
-                    <img src="${escapedImageUrl}" alt="Profile Post Photo" class="post-card-img" onerror="this.src='assets/logo_02.webp'" loading="lazy">
+                    ${mediaHtml}
                 </div>
                 <p class="card-caption">${escapedCaption}</p>
             `;
@@ -519,10 +531,22 @@ async function loadLikedPosts() {
             
             const escapedImageUrl = escapeHtml(data.imageUrl || '');
             const escapedCaption = escapeHtml(data.caption || '');
+            const isVideo = escapedImageUrl.toLowerCase().endsWith('.mp4') || escapedImageUrl.toLowerCase().endsWith('.webm');
+            
+            const mediaHtml = isVideo ? `
+                <div class="video-cover-container">
+                    <video src="${escapedImageUrl}#t=0.1" preload="metadata" class="post-card-img video-cover-element" muted playsinline></video>
+                    <div class="video-play-badge">
+                        <i class="fa-solid fa-play"></i>
+                    </div>
+                </div>
+            ` : `
+                <img src="${escapedImageUrl}" alt="Liked Post Photo" class="post-card-img" onerror="this.src='assets/logo_02.webp'" loading="lazy">
+            `;
             
             card.innerHTML = `
                 <div class="post-card-img-wrapper">
-                    <img src="${escapedImageUrl}" alt="Liked Post Photo" class="post-card-img" onerror="this.src='assets/logo_02.webp'" loading="lazy">
+                    ${mediaHtml}
                 </div>
                 <p class="card-caption">${escapedCaption}</p>
             `;
@@ -623,6 +647,13 @@ async function uploadFileToR2(file, folder = 'posts') {
 
 // Shared profile Lightbox viewer specifically for profile page ฟังก์ชันเปิดไลท์บ็อกซ์แสดงภาพแบบละเอียดพร้อมระบบคอมเมนต์สนทนาสำหรับหน้าประวัติโดยเฉพาะ
 function openProfileLightbox(postData) {
+    const rawUrl = (postData && postData.imageUrl) || '';
+    const isVideo = rawUrl.toLowerCase().endsWith('.mp4') || rawUrl.toLowerCase().endsWith('.webm');
+    if (isVideo && postData && postData.id) {
+        window.location.href = `shorts.html?post=${postData.id}`;
+        return;
+    }
+
     const existing = document.getElementById('miku-lightbox');
     if (existing) existing.remove();
 
@@ -896,7 +927,7 @@ function openProfileLightbox(postData) {
                     activeReplyParentId = null;
                     replyToName = "";
                     
-                    showMikuToast("ส่งความคิดเห็นแล้ว! 💬", "success");
+                    showMikuToast("ส่งความคิดเห็นแล้ว!", "success");
                     await fetchAndRenderComments();
                 } catch (err) {
                     console.error("Error posting comment:", err);
@@ -933,7 +964,7 @@ function openProfileLightbox(postData) {
                 document.body.removeChild(downloadAnchor);
                 
                 window.URL.revokeObjectURL(tempUrl);
-                showMikuToast("บันทึกภาพสำเร็จ! 💾", "success");
+                showMikuToast("บันทึกภาพสำเร็จ!", "success");
             } catch (err) {
                 console.error("Secure Blob download failed:", err);
                 const backupAnchor = document.createElement('a');
@@ -1166,7 +1197,7 @@ async function openFollowModal(type, targetUid) {
             
             listContainer.innerHTML = '';
             if (filtered.length === 0) {
-                listContainer.innerHTML = `<div style="text-align: center; padding: 32px 16px; color: #888; font-size: 13px; font-style: italic;">ไม่พบรายชื่อผู้ใช้ที่ตรงกัน 🌸</div>`;
+                listContainer.innerHTML = `<div style="text-align: center; padding: 32px 16px; color: #888; font-size: 13px; font-style: italic;">ไม่พบรายชื่อผู้ใช้ที่ตรงกัน</div>`;
                 return;
             }
             

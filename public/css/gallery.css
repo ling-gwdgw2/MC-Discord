@@ -481,6 +481,54 @@
     opacity: 1;
 }
 
+/* Video Cover Container and Play Badge Overlay */
+.video-cover-container {
+    position: relative;
+    width: 100%;
+    overflow: hidden;
+    cursor: pointer;
+}
+
+.video-cover-element {
+    width: 100%;
+    height: auto;
+    max-height: 550px;
+    object-fit: cover;
+    display: block;
+    pointer-events: none;
+}
+
+.video-play-badge {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(1);
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    background: rgba(0, 0, 0, 0.55);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border: 2px solid rgba(255, 255, 255, 0.85);
+    color: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    z-index: 4;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4), 0 0 20px rgba(76, 184, 184, 0.3);
+    transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1), background-color 0.25s ease;
+    padding-left: 3px;
+}
+
+.post-card:hover .video-play-badge,
+.video-cover-container:hover .video-play-badge {
+    transform: translate(-50%, -50%) scale(1.15);
+    background: rgba(76, 184, 184, 0.85);
+    border-color: #ffffff;
+    box-shadow: 0 6px 24px rgba(76, 184, 184, 0.6);
+}
+
 /* คำอธิบายรูปภาพ/แคปชั่นด้านล่างการ์ด */
 .card-caption {
     position: absolute;
