@@ -57,22 +57,25 @@ async function compressVideo(file, progressCallback) {
         return file;
     }
 
-    if (typeof FFmpeg === 'undefined' || typeof FFmpegUtil === 'undefined') {
+    const hasFFmpeg = typeof window.FFmpegWASM !== 'undefined' || typeof window.FFmpeg !== 'undefined';
+    const hasFFmpegUtil = typeof window.FFmpegUtil !== 'undefined';
+
+    if (!hasFFmpeg || !hasFFmpegUtil) {
         console.warn("FFmpeg WASM libraries not loaded, bypassing video compression.");
         return file;
     }
 
-    const { FFmpeg } = FFmpegWASM || window.FFmpegWASM || window.FFmpeg || {};
-    const { fetchFile } = FFmpegUtil || window.FFmpegUtil || window.FFmpeg || {};
+    const FFmpegClass = (window.FFmpegWASM && window.FFmpegWASM.FFmpeg) || (window.FFmpeg && window.FFmpeg.FFmpeg) || window.FFmpeg;
+    const fetchFileFn = (window.FFmpegUtil && window.FFmpegUtil.fetchFile) || (window.FFmpeg && window.FFmpeg.fetchFile);
 
-    if (!FFmpeg) {
+    if (!FFmpegClass || typeof FFmpegClass !== 'function') {
         console.warn("FFmpeg object unavailable, uploading original video.");
         return file;
     }
 
     try {
         if (!ffmpegInstance) {
-            ffmpegInstance = new FFmpeg();
+            ffmpegInstance = new FFmpegClass();
         }
         
         if (!ffmpegInstance.loaded) {
@@ -90,7 +93,7 @@ async function compressVideo(file, progressCallback) {
             }
         });
 
-        await ffmpegInstance.writeFile(inputName, await fetchFile(file));
+        await ffmpegInstance.writeFile(inputName, await fetchFileFn(file));
 
         // Compress to 720p H.264 with AAC audio
         await ffmpegInstance.exec([
