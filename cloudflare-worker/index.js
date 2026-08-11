@@ -581,6 +581,17 @@ export default {
 
       } else if (request.method === "POST" && url.pathname === "/upload") {
         const contentType = request.headers.get("Content-Type") || "application/octet-stream";
+        const contentLengthHeader = request.headers.get("Content-Length");
+        const contentLength = contentLengthHeader ? parseInt(contentLengthHeader, 10) : 0;
+        
+        const MAX_UPLOAD_SIZE = 500 * 1024 * 1024; // 500 MB limit
+        if (contentLength > MAX_UPLOAD_SIZE) {
+          return new Response(JSON.stringify({ error: "File size exceeds 500MB limit" }), {
+            status: 400,
+            headers: { "Content-Type": "application/json", ...corsHeaders }
+          });
+        }
+
         const rawFilename = request.headers.get("X-Filename") || "file";
         let clientFilename = rawFilename;
         try {
@@ -591,9 +602,8 @@ export default {
         const cleanFilename = clientFilename.replace(/[^a-zA-Z0-9.-]/g, "_");
         const key = `posts/${uid}/${Date.now()}_${cleanFilename}`;
         
-        const fileData = await request.arrayBuffer();
-
-        await env.R2_BUCKET.put(key, fileData, {
+        // Stream directly to R2 bucket without buffering in Worker RAM
+        await env.R2_BUCKET.put(key, request.body, {
           httpMetadata: { 
             contentType,
             cacheControl: "public, max-age=31536000, immutable"
@@ -610,17 +620,19 @@ export default {
 
       } else if (request.method === "POST" && url.pathname === "/upload-avatar") {
         const contentType = request.headers.get("Content-Type") || "image/png";
-        const key = `avatars/${uid}/${Date.now()}_avatar.png`;
-        
-        const fileData = await request.arrayBuffer();
-        if (fileData.byteLength > 2 * 1024 * 1024) {
+        const contentLengthHeader = request.headers.get("Content-Length");
+        const contentLength = contentLengthHeader ? parseInt(contentLengthHeader, 10) : 0;
+
+        if (contentLength > 2 * 1024 * 1024) {
           return new Response(JSON.stringify({ error: "File size exceeds 2MB limit" }), {
             status: 400,
             headers: { "Content-Type": "application/json", ...corsHeaders }
           });
         }
 
-        await env.R2_BUCKET.put(key, fileData, {
+        const key = `avatars/${uid}/${Date.now()}_avatar.png`;
+        
+        await env.R2_BUCKET.put(key, request.body, {
           httpMetadata: { 
             contentType,
             cacheControl: "public, max-age=31536000, immutable"

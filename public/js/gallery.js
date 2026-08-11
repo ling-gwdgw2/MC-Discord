@@ -200,7 +200,7 @@ async function uploadFileToR2(rawFile, type = 'post', progressCallback) {
     const currentUser = firebase.auth().currentUser;
     const MAX_FILE_SIZE = 500 * 1024 * 1024; // 500MB limit for Cloudflare Worker & R2 uploads
     if (rawFile.size > MAX_FILE_SIZE) {
-        throw new Error("ขนาดไฟล์ใหญ่เกินไป (จำกัดไม่เกิน 500MB) กรุณาเลือกไฟล์ที่ขนาดเล็กลงหรือตัดคลิปวิดีโอให้สั้นลง");
+        throw new Error("ขนาดไฟล์ใหญ่เกินไป (จำกัดไม่เกิน 500 MB Full HD) กรุณาเลือกไฟล์ที่ขนาดเล็กลงหรือตัดคลิปวิดีโอให้สั้นลง");
     }
 
     let file = rawFile;
@@ -1554,11 +1554,31 @@ function handleFileSelect(file) {
     const previewVideo = document.getElementById('dropzone-preview-video');
     const dropzoneContent = document.querySelector('.dropzone-content');
     
+    // 500MB Size Limit Check
+    const MAX_FILE_SIZE = 500 * 1024 * 1024;
+    if (file.size > MAX_FILE_SIZE) {
+        showMikuToast("ขนาดไฟล์ใหญ่เกินไป (จำกัดไม่เกิน 500 MB Full HD)", "error");
+        if (postFileInput) postFileInput.value = '';
+        if (previewContainer) previewContainer.style.display = 'none';
+        if (dropzoneContent) dropzoneContent.style.display = 'flex';
+        return;
+    }
+
     if (file.type.startsWith('video/')) {
         if (previewImg) previewImg.style.display = 'none';
         if (previewVideo) {
-            previewVideo.src = URL.createObjectURL(file);
+            const videoUrl = URL.createObjectURL(file);
+            previewVideo.src = videoUrl;
             previewVideo.style.display = 'block';
+
+            // Verify Full HD Video Resolution (1080p / max 1920x1080 or 1080x1920)
+            previewVideo.onloadedmetadata = () => {
+                const w = previewVideo.videoWidth;
+                const h = previewVideo.videoHeight;
+                if (w > 1920 || h > 1920) {
+                    showMikuToast(`การแจ้งเตือน: วิดีโอมีความละเอียด ${w}x${h} (ระดับแนะนำสูงสุดคือ Full HD 1080p)`, "warning");
+                }
+            };
         }
         if (previewContainer) previewContainer.style.display = 'flex';
         if (dropzoneContent) dropzoneContent.style.display = 'none';
