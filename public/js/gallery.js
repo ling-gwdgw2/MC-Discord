@@ -95,10 +95,10 @@ async function compressVideo(file, progressCallback) {
 
         await ffmpegInstance.writeFile(inputName, await fetchFileFn(file));
 
-        // Compress to 720p H.264 with AAC audio
+        // Compress to 1080p H.264 with AAC audio
         await ffmpegInstance.exec([
             '-i', inputName,
-            '-vf', "scale='min(720,iw)':-2",
+            '-vf', "scale='min(1080,iw)':-2",
             '-vcodec', 'libx264',
             '-crf', '28',
             '-preset', 'ultrafast',
