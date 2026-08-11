@@ -11,3 +11,8 @@ build/
 *.log
 .DS_Store
 Thumbs.db
+*.code-workspace
+skills-lock.json
+.env
+.env.*
+
