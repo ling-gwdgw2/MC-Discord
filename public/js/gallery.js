@@ -48,6 +48,66 @@ function compressImage(file, maxWidth = 1600, maxHeight = 1600) {
         };
     });
 }
+// Helper function to extract a JPEG thumbnail poster and metadata from a video file
+function generateVideoThumbnail(file, seekTime = 1.0) {
+    return new Promise((resolve) => {
+        if (!file.type.startsWith('video/')) {
+            resolve(null);
+            return;
+        }
+
+        const video = document.createElement('video');
+        video.preload = 'metadata';
+        video.muted = true;
+        video.playsInline = true;
+        const objectUrl = URL.createObjectURL(file);
+        video.src = objectUrl;
+
+        video.onloadeddata = () => {
+            const targetTime = Math.min(seekTime, video.duration > 0 ? video.duration / 2 : seekTime);
+            video.currentTime = targetTime;
+        };
+
+        video.onseeked = () => {
+            try {
+                const canvas = document.createElement('canvas');
+                canvas.width = video.videoWidth || 640;
+                canvas.height = video.videoHeight || 360;
+                const ctx = canvas.getContext('2d');
+                ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+                URL.revokeObjectURL(objectUrl);
+
+                canvas.toBlob((blob) => {
+                    if (!blob) {
+                        resolve(null);
+                        return;
+                    }
+                    const thumbFilename = file.name.substring(0, file.name.lastIndexOf('.')) + '_thumb.jpg';
+                    const thumbFile = new File([blob], thumbFilename, {
+                        type: 'image/jpeg',
+                        lastModified: Date.now()
+                    });
+                    resolve({
+                        file: thumbFile,
+                        duration: video.duration,
+                        width: video.videoWidth,
+                        height: video.videoHeight
+                    });
+                }, 'image/jpeg', 0.85);
+            } catch (err) {
+                URL.revokeObjectURL(objectUrl);
+                resolve(null);
+            }
+        };
+
+        video.onerror = () => {
+            URL.revokeObjectURL(objectUrl);
+            resolve(null);
+        };
+    });
+}
+
 // Global FFmpeg instance holder
 let ffmpegInstance = null;
 
@@ -132,9 +192,9 @@ async function uploadFileToR2(rawFile, type = 'post', progressCallback) {
     }
 
     const currentUser = firebase.auth().currentUser;
-    const MAX_FILE_SIZE = 100 * 1024 * 1024; // 100MB limit for Cloudflare Worker & R2 uploads
+    const MAX_FILE_SIZE = 500 * 1024 * 1024; // 500MB limit for Cloudflare Worker & R2 uploads
     if (rawFile.size > MAX_FILE_SIZE) {
-        throw new Error("ขนาดไฟล์ใหญ่เกินไป (จำกัดไม่เกิน 100MB) กรุณาเลือกไฟล์ที่ขนาดเล็กลงหรือตัดคลิปวิดีโอให้สั้นลง");
+        throw new Error("ขนาดไฟล์ใหญ่เกินไป (จำกัดไม่เกิน 500MB) กรุณาเลือกไฟล์ที่ขนาดเล็กลงหรือตัดคลิปวิดีโอให้สั้นลง");
     }
 
     let file = rawFile;
