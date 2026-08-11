@@ -277,10 +277,12 @@ export default {
         } else if (sortMode === "newest" || sortMode === "date") {
           query += ` ORDER BY p.createdAt DESC LIMIT ? `;
         } else {
-          // Rule-Based Hot Score: LOG10(MAX(1, Likes*3 + Comments*5)) + (createdAt / 45,000,000.0)
+          // Rule-Based Hot Score (Fail-safe SQLite Arithmetic): 
+          // 1 Like = +3 hours (+10,800,000 ms), 1 Comment = +5 hours (+18,000,000 ms) timestamp boost
           query += ` ORDER BY (
-            LOG10(MAX(1, (SELECT COUNT(*) FROM post_likes WHERE postId = p.id) * 3 + (SELECT COUNT(*) FROM comments WHERE postId = p.id) * 5)) + 
-            (p.createdAt / 45000000.0)
+            (SELECT COUNT(*) FROM post_likes WHERE postId = p.id) * 10800000 + 
+            (SELECT COUNT(*) FROM comments WHERE postId = p.id) * 18000000 + 
+            p.createdAt
           ) DESC, p.createdAt DESC LIMIT ? `;
         }
         params.push(limit);
