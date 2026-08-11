@@ -132,11 +132,15 @@ async function uploadFileToR2(rawFile, type = 'post', progressCallback) {
     }
 
     const currentUser = firebase.auth().currentUser;
-    if (!currentUser) throw new Error("User must be logged in to upload files.");
+    const MAX_FILE_SIZE = 100 * 1024 * 1024; // 100MB limit for Cloudflare Worker & R2 uploads
+    if (rawFile.size > MAX_FILE_SIZE) {
+        throw new Error("ขนาดไฟล์ใหญ่เกินไป (จำกัดไม่เกิน 100MB) กรุณาเลือกไฟล์ที่ขนาดเล็กลงหรือตัดคลิปวิดีโอให้สั้นลง");
+    }
 
     let file = rawFile;
     if (rawFile.type.startsWith('image/')) {
         try {
+            if (progressCallback) progressCallback("Optimizing image...");
             const maxDim = type === 'avatar' ? 400 : 1600;
             file = await compressImage(rawFile, maxDim, maxDim);
         } catch (e) {
@@ -144,9 +148,9 @@ async function uploadFileToR2(rawFile, type = 'post', progressCallback) {
         }
     } else if (rawFile.type.startsWith('video/')) {
         try {
+            if (progressCallback) progressCallback("Compressing video...");
             file = await compressVideo(rawFile, (statusText) => {
                 if (progressCallback && typeof statusText === 'string') {
-                    // Pass status string back to button text handler
                     progressCallback(statusText);
                 }
             });
