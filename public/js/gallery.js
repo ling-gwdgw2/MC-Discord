@@ -229,7 +229,7 @@ async function uploadFileToR2(rawFile, type = 'post', progressCallback) {
             };
         }
 
-        xhr.timeout = 180000; // 3 minutes timeout for video/media uploads
+        xhr.timeout = 600000; // 10 minutes timeout for large 500MB media uploads
 
         xhr.onload = () => {
             if (xhr.status >= 200 && xhr.status < 300) {
@@ -1693,7 +1693,7 @@ async function handlePostSubmit(event) {
             submitBtn.disabled = false;
             const playText = submitBtn.querySelector('.play');
             if (playText) {
-                playText.innerHTML = 'Post Photo';
+                playText.innerHTML = 'Post Media';
             }
         }
         if (progressContainer) progressContainer.style.display = 'none';
