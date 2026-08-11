@@ -469,6 +469,8 @@
 .post-card-img {
     width: 100%;
     height: auto;
+    max-height: 550px;
+    object-fit: cover;
     display: block;
     opacity: 0;
     transition: opacity 0.3s ease-in-out, transform 0.4s ease;
@@ -497,6 +499,7 @@
     text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8);
     display: -webkit-box;
     -webkit-line-clamp: 2;
+    line-clamp: 2;
     -webkit-box-orient: vertical;
     overflow: hidden;
 }
@@ -574,12 +577,15 @@
 /* Mobile & Touch Devices Optimization การปรับแต่งหน้าจอสำหรับโทรศัพท์มือถือและอุปกรณ์สัมผัส */
 @media (hover: none) {
 
-    /* Make card overlays permanently visible on touch screens to prevent layout shifts and hidden content */
+    /* Make card details clear and readable on touch screens without dark gradient filter overlay */
     .card-header,
     .card-caption,
-    .card-actions,
-    .post-card-img-wrapper::after {
+    .card-actions {
         opacity: 1 !important;
+    }
+
+    .post-card-img-wrapper::after {
+        display: none !important;
     }
 
     /* Expand tap targets on mobile for touch accuracy (approx +25%) */
@@ -603,6 +609,11 @@
 
     .card-actions {
         bottom: 14px !important;
+    }
+
+    #post-section,
+    .posts-grid {
+        padding-bottom: 100px !important;
     }
 }
 
@@ -858,22 +869,36 @@
         grid-template-rows: auto auto;
         width: 100% !important;
         height: 100% !important;
-        max-height: 100vh !important;
+        max-height: 100dvh !important;
         border-radius: 0 !important;
         margin: 0 !important;
         overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
     }
 
     .lightbox-image-container {
-        height: 50vh !important;
+        height: 45dvh !important;
+        max-height: 45dvh !important;
         padding: 12px !important;
+    }
+
+    .posts-grid {
+        gap: 12px !important;
+    }
+
+    .masonry-col {
+        gap: 12px !important;
+    }
+
+    .post-card:active {
+        transform: scale(0.98) !important;
     }
 }
 
 .lightbox-image-container {
     width: 100%;
     height: 100%;
-    background: #9ad8eb;
+    background: #0f172a;
     display: flex;
     justify-content: center;
     align-items: center;

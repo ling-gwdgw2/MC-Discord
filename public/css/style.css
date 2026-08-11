@@ -1199,9 +1199,9 @@ body {
 
 @media (max-width: 768px) {
 
-    /* 1. จัดการระยะห่างขอบเว็บและเพิ่มพื้นที่ด้านล่างเพื่อป้องกันการบังของ Bottom Nav Bar */
+    /* 1. จัดการระยะห่างขอบเว็บและเพิ่มพื้นที่ด้านล่างเพื่อป้องกันการบังของ Bottom Nav Bar พร้อม Safe Area */
     body {
-        padding: 0 10px 80px !important;
+        padding: 0 10px calc(84px + env(safe-area-inset-bottom, 0px)) !important;
     }
 
     /* 2. ปรับแต่งส่วนหัว (Header) ด้านบนให้ดูเรียบร้อย กระชับ และสบายตาสำหรับจอขนาดเล็ก */
@@ -1245,38 +1245,46 @@ body {
         font-size: 13px !important;
     }
 
-    /* 4. ปรับขนาดกลุ่มปุ่มกด Utilities ขวา (Profile / Add) */
+    /* 4. ปรับขนาดกลุ่มปุ่มกด Utilities ขวา (Profile / Add) ให้แตะสะดวก (>=44px touch target) */
     .header-actions {
         gap: 8px !important;
     }
 
     .header-actions .nav-icon-btn {
-        width: 38px !important;
-        height: 38px !important;
-        border-radius: 10px !important;
-        font-size: 16px !important;
+        width: 44px !important;
+        height: 44px !important;
+        border-radius: 12px !important;
+        font-size: 18px !important;
+        touch-action: manipulation !important;
+        -webkit-tap-highlight-color: transparent !important;
+        transition: transform 0.15 ease, background-color 0.15s ease !important;
     }
 
-    /* 5. เปลี่ยนแถบเมนูหลักเป็น Bottom Navigation Bar แบบลอยสไตล์แอป Native */
+    .header-actions .nav-icon-btn:active {
+        transform: scale(0.92) !important;
+    }
+
+    /* 5. เปลี่ยนแถบเมนูหลักเป็น Bottom Navigation Bar แบบลอยสไตล์แอป Native พร้อมรองรับ Safe Area Inset */
     .main-nav {
         position: fixed !important;
-        bottom: 16px !important;
+        bottom: calc(16px + env(safe-area-inset-bottom, 0px)) !important;
         left: 16px !important;
         right: 16px !important;
         height: 64px !important;
-        background: rgba(241, 247, 247, 0.85) !important;
+        background: rgba(241, 247, 247, 0.88) !important;
         backdrop-filter: blur(20px) !important;
         -webkit-backdrop-filter: blur(20px) !important;
-        border: 1.5px solid rgba(76, 184, 184, 0.2) !important;
+        border: 1.5px solid rgba(76, 184, 184, 0.25) !important;
         border-radius: 20px !important;
-        box-shadow: 0 8px 32px rgba(76, 184, 184, 0.15) !important;
+        box-shadow: 0 8px 32px rgba(76, 184, 184, 0.18) !important;
         z-index: 1000 !important;
         display: flex !important;
         justify-content: space-around !important;
         align-items: center !important;
-        padding: 0 12px !important;
+        padding: 0 8px !important;
         margin: 0 !important;
         flex: none !important;
+        -webkit-tap-highlight-color: transparent !important;
     }
 
     /* 6. ปรับแต่งปุ่มลิงก์ด้านในแถบ Bottom Nav Bar (ไอคอนอยู่บน ตัวหนังสือเล็กอยู่ล่าง) */
@@ -1285,13 +1293,20 @@ body {
         flex-direction: column !important;
         align-items: center !important;
         justify-content: center !important;
-        gap: 4px !important;
-        width: 60px !important;
+        gap: 3px !important;
+        min-width: 52px !important;
         height: 100% !important;
         background: transparent !important;
         border: none !important;
-        padding: 0 !important;
-        border-radius: 0 !important;
+        padding: 4px 0 !important;
+        border-radius: 12px !important;
+        touch-action: manipulation !important;
+        -webkit-tap-highlight-color: transparent !important;
+        transition: transform 0.15s ease, color 0.15s ease !important;
+    }
+
+    .main-nav .nav-link:active {
+        transform: scale(0.92) !important;
     }
 
     .main-nav .nav-link::after {

@@ -17,8 +17,11 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
         media="print" onload="this.media='all'">
     <!-- Main Style Sheets สไตล์ชีทหลักของระบบ -->
-    <link rel="stylesheet" href="style.css?v=2">
-    <link rel="stylesheet" href="gallery.css?v=20260706i">
+    <link rel="stylesheet" href="css/style.css?v=2">
+    <link rel="stylesheet" href="css/gallery.css?v=20260706i">
+    <!-- FFmpeg WASM Libraries for Client-Side Video Compression -->
+    <script src="https://unpkg.com/@ffmpeg/ffmpeg@0.12.10/dist/umd/ffmpeg.js"></script>
+    <script src="https://unpkg.com/@ffmpeg/util@0.12.1/dist/umd/index.js"></script>
 </head>
 
 <body>
@@ -44,6 +47,10 @@
                 <a href="gallery.html" class="nav-link active" id="nav-post-link">
                     <i class="fa-solid fa-images nav-icon"></i>
                     <span class="nav-text">Gallery</span>
+                </a>
+                <a href="shorts.html" class="nav-link" id="nav-shorts-link">
+                    <i class="fa-solid fa-clapperboard nav-icon"></i>
+                    <span class="nav-text">Shorts</span>
                 </a>
                 <a href="index.html" class="nav-link" id="nav-home-link">
                     <i class="fa-solid fa-house nav-icon"></i>
@@ -119,20 +126,21 @@
                                 </select>
                             </div>
 
-                            <div class="form-group">
-                                <label>Photo Upload</label>
+                             <div class="form-group">
+                                <label>Photo or Video Upload</label>
                                 <div class="dropzone-area" id="dropzone-area">
-                                    <input type="file" id="post-file" accept="image/*,image/gif"
+                                    <input type="file" id="post-file" accept="image/*,image/gif,video/mp4,video/webm"
                                         class="file-hidden-input" required>
                                     <div class="dropzone-content">
                                         <i class="fa-solid fa-cloud-arrow-up dropzone-icon"></i>
-                                        <p class="dropzone-text">Drag & drop your image here or <span>browse</span></p>
-                                        <p class="dropzone-hint">Supports JPEG, PNG, WEBP (Max 5MB)</p>
+                                        <p class="dropzone-text">Drag & drop your file here or <span>browse</span></p>
+                                        <p class="dropzone-hint">Supports JPEG, PNG, WEBP, GIF, MP4, WEBM (All File Sizes)</p>
                                     </div>
                                     <div class="dropzone-preview-container" id="dropzone-preview-container"
-                                        style="display: none;">
+                                        style="display: none; flex-direction: column; align-items: center; gap: 12px; width: 100%;">
                                         <img src="" alt="Selected Preview" class="dropzone-preview-img"
-                                            id="dropzone-preview-img">
+                                            id="dropzone-preview-img" style="display: none;">
+                                        <video id="dropzone-preview-video" class="dropzone-preview-img" style="display: none; max-height: 240px; border-radius: 12px;" controls></video>
                                         <button type="button" class="dropzone-remove-btn" id="dropzone-remove-btn">
                                             <i class="fa-solid fa-trash-can"></i> Remove
                                         </button>
@@ -352,8 +360,8 @@
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
 
     <!-- Live Script สคริปต์หลักสำหรับการควบคุมหน้าแกลเลอรี -->
-    <script src="common.js"></script>
-    <script src="gallery.js?v=20260706g"></script>
+    <script src="js/common.js"></script>
+    <script src="js/gallery.js?v=20260706g"></script>
 </body>
 
 </html>

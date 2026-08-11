@@ -568,18 +568,17 @@ export default {
         });
 
       } else if (request.method === "POST" && url.pathname === "/upload") {
-        const contentType = request.headers.get("Content-Type") || "application/octet-stream";
-        const clientFilename = request.headers.get("X-Filename") || "file";
+        const rawFilename = request.headers.get("X-Filename") || "file";
+        let clientFilename = rawFilename;
+        try {
+          clientFilename = decodeURIComponent(rawFilename);
+        } catch (e) {
+          clientFilename = rawFilename;
+        }
         const cleanFilename = clientFilename.replace(/[^a-zA-Z0-9.-]/g, "_");
         const key = `posts/${uid}/${Date.now()}_${cleanFilename}`;
         
         const fileData = await request.arrayBuffer();
-        if (fileData.byteLength > 5 * 1024 * 1024) {
-          return new Response(JSON.stringify({ error: "File size exceeds 5MB limit" }), {
-            status: 400,
-            headers: { "Content-Type": "application/json", ...corsHeaders }
-          });
-        }
 
         await env.R2_BUCKET.put(key, fileData, {
           httpMetadata: { 

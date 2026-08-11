@@ -1,6 +1,6 @@
 {
   "scripts": {
-    "dev": "npx -y http-server -c-1 -p 3000",
+    "dev": "npx -y http-server public -c-1 -p 3000",
     "deploy": "wrangler deploy",
     "preview": "wrangler dev"
   },

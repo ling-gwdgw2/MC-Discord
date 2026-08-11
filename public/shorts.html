@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shorts | MC Discord Hatsune Miku Hub</title>
+    <meta name="description" content="Watch short videos and reels shared by MC Discord community members.">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;700;800&family=Outfit:wght@400;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- FontAwesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" media="print" onload="this.media='all'">
+    <!-- Main Style Sheets -->
+    <link rel="stylesheet" href="css/style.css?v=2">
+    <link rel="stylesheet" href="css/gallery.css?v=20260706i">
+    <link rel="stylesheet" href="css/shorts.css?v=20260810">
+</head>
+
+<body class="shorts-page-body" style="background: #0f172a; overflow: hidden;">
+    <!-- Skip to Content Link -->
+    <a href="#main-content" class="skip-link">Skip to Content</a>
+
+    <div class="app-container" style="padding-bottom: 0;">
+        <!-- Navigation Header -->
+        <header class="main-header" style="background: rgba(15, 23, 42, 0.9); backdrop-filter: blur(10px); border-bottom: 1px solid rgba(255,255,255,0.1);">
+            <div class="header-logo-search">
+                <a href="index.html" class="header-logo">
+                    <img src="assets/miku_chibi_wave.webp" alt="Miku Logo" class="logo-img">
+                    <span class="logo-text" style="color: #ffffff;">MC Discord</span>
+                </a>
+            </div>
+
+            <nav class="main-nav">
+                <a href="gallery.html" class="nav-link" id="nav-post-link" style="color: rgba(255,255,255,0.7);">
+                    <i class="fa-solid fa-images nav-icon"></i>
+                    <span class="nav-text">Gallery</span>
+                </a>
+                <a href="shorts.html" class="nav-link active" id="nav-shorts-link">
+                    <i class="fa-solid fa-clapperboard nav-icon"></i>
+                    <span class="nav-text">Shorts</span>
+                </a>
+                <a href="index.html" class="nav-link" id="nav-home-link" style="color: rgba(255,255,255,0.7);">
+                    <i class="fa-solid fa-house nav-icon"></i>
+                    <span class="nav-text">Home</span>
+                </a>
+                <a href="#" class="nav-link" id="nav-members-link" style="color: rgba(255,255,255,0.7);">
+                    <i class="fa-solid fa-users nav-icon"></i>
+                    <span class="nav-text">Member</span>
+                </a>
+            </nav>
+
+            <div class="header-actions">
+                <button class="nav-icon-btn add-btn" id="nav-create-post-btn" title="Share Your Moments" aria-label="Share Your Moments">
+                    <i class="fa-solid fa-plus"></i>
+                </button>
+                <div class="notification-wrapper" style="position: relative; display: inline-block;">
+                    <button class="nav-icon-btn notification-btn" id="nav-notification-btn" title="Notifications" aria-label="Notifications">
+                        <i class="fa-regular fa-bell"></i>
+                        <span class="notification-badge" id="notification-unread-badge" style="display: none; position: absolute; top: -2px; right: -2px; background: var(--accent-pink-contrast); color: white; border-radius: 50%; padding: 2px 6px; font-size: 10px; font-weight: bold; line-height: 1;">0</span>
+                    </button>
+                </div>
+                <button class="nav-icon-btn profile-btn" id="nav-profile-btn" title="My Profile" aria-label="My Profile">
+                    <i class="fa-regular fa-user"></i>
+                </button>
+                <div id="header-auth-controls">
+                    <button class="btn btn-outline nav-login-btn" id="header-login-btn">Log In</button>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content Area: Vertical Shorts Feed -->
+        <main id="main-content">
+            <div class="shorts-feed-container" id="shorts-feed-container">
+                <div class="shorts-loader-state" id="shorts-loader-state" style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; color: #ffffff;">
+                    <i class="fa-solid fa-circle-notch fa-spin" style="font-size: 32px; margin-bottom: 12px; color: var(--primary-cyan);"></i>
+                    <span>กำลังโหลด Shorts Reels...</span>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Miku toast alerts container -->
+    <div id="miku-toast-container" class="miku-toast-container"></div>
+
+    <!-- Auth Modal Overlay -->
+    <div class="modal-overlay" id="auth-modal" style="display: none;">
+        <div class="modal-card animate-slide-up" style="max-width: 400px; width: 100%;">
+            <div class="modal-header">
+                <h2 id="auth-modal-title">Welcome Back</h2>
+                <button class="modal-close-btn" id="auth-close-btn" aria-label="Close modal">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="auth-tabs">
+                    <button class="auth-tab active" id="tab-login">Log In</button>
+                    <button class="auth-tab" id="tab-signup">Sign Up</button>
+                </div>
+                <div id="auth-alert" class="auth-alert" style="display: none;"></div>
+                <form id="auth-form">
+                    <div class="form-group" id="form-group-name" style="display: none;">
+                        <label for="auth-name">Display Name</label>
+                        <div class="input-wrapper">
+                            <i class="fa-solid fa-user input-icon"></i>
+                            <input type="text" id="auth-name" placeholder="Hatsune Miku">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="auth-email">Email</label>
+                        <div class="input-wrapper">
+                            <i class="fa-solid fa-envelope input-icon"></i>
+                            <input type="email" id="auth-email" placeholder="miku@vocaloid.com" required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="auth-password">Password</label>
+                        <div class="input-wrapper">
+                            <i class="fa-solid fa-lock input-icon"></i>
+                            <input type="password" id="auth-password" placeholder="••••••••" required>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-solid auth-submit-btn" id="auth-submit-btn">
+                        Log In <i class="fa-solid fa-arrow-right-to-bracket" style="margin-left: 6px;"></i>
+                    </button>
+                </form>
+                <div class="auth-forgot-row" id="auth-forgot-row">
+                    <a href="#" class="auth-link" id="auth-forgot-link">Forgot Password?</a>
+                </div>
+                <div class="auth-separator">
+                    <span>or continue with</span>
+                </div>
+                <button class="btn btn-outline google-auth-btn" id="auth-google-btn">
+                    <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/action/google.svg" alt="Google Logo" class="google-icon">
+                    Sign in with Google
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Firebase SDK (v10 compat) -->
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+
+    <!-- Live Scripts -->
+    <script src="js/common.js"></script>
+    <script src="js/shorts.js?v=20260810"></script>
+</body>
+
+</html>

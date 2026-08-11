@@ -17,7 +17,10 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
         media="print" onload="this.media='all'">
     <!-- Main Style Sheet สไตล์ชีทหลักของระบบ -->
-    <link rel="stylesheet" href="style.css?v=2">
+    <link rel="stylesheet" href="css/style.css?v=2">
+    <!-- FFmpeg WASM Libraries for Client-Side Video Compression -->
+    <script src="https://unpkg.com/@ffmpeg/ffmpeg@0.12.10/dist/umd/ffmpeg.js"></script>
+    <script src="https://unpkg.com/@ffmpeg/util@0.12.1/dist/umd/index.js"></script>
 </head>
 
 <body>
@@ -36,6 +39,10 @@
                 <a href="gallery.html" class="nav-link" id="nav-post-link">
                     <i class="fa-solid fa-images nav-icon"></i>
                     <span class="nav-text">Gallery</span>
+                </a>
+                <a href="shorts.html" class="nav-link" id="nav-shorts-link">
+                    <i class="fa-solid fa-clapperboard nav-icon"></i>
+                    <span class="nav-text">Shorts</span>
                 </a>
                 <a href="index.html" class="nav-link active" id="nav-home-link">
                     <i class="fa-solid fa-house nav-icon"></i>
@@ -335,8 +342,8 @@
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
 
     <!-- Live Script สคริปต์หลักสำหรับการเชื่อมต่อหน้าโฮมเพจ -->
-    <script src="common.js"></script>
-    <script src="app.js"></script>
+    <script src="js/common.js"></script>
+    <script src="js/app.js"></script>
 </body>
 
 </html>

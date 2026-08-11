@@ -48,6 +48,79 @@ function compressImage(file, maxWidth = 1600, maxHeight = 1600) {
         };
     });
 }
+// Global FFmpeg instance holder
+let ffmpegInstance = null;
+
+// Helper function to compress video client-side using FFmpeg WASM
+async function compressVideo(file, progressCallback) {
+    if (!file.type.startsWith('video/')) {
+        return file;
+    }
+
+    if (typeof FFmpeg === 'undefined' || typeof FFmpegUtil === 'undefined') {
+        console.warn("FFmpeg WASM libraries not loaded, bypassing video compression.");
+        return file;
+    }
+
+    const { FFmpeg } = FFmpegWASM || window.FFmpegWASM || window.FFmpeg || {};
+    const { fetchFile } = FFmpegUtil || window.FFmpegUtil || window.FFmpeg || {};
+
+    if (!FFmpeg) {
+        console.warn("FFmpeg object unavailable, uploading original video.");
+        return file;
+    }
+
+    try {
+        if (!ffmpegInstance) {
+            ffmpegInstance = new FFmpeg();
+        }
+        
+        if (!ffmpegInstance.loaded) {
+            if (progressCallback) progressCallback('Init FFmpeg...');
+            await ffmpegInstance.load();
+        }
+
+        const inputName = `input_${Date.now()}.${file.name.split('.').pop() || 'mp4'}`;
+        const outputName = `output_${Date.now()}.mp4`;
+
+        ffmpegInstance.on('progress', ({ progress }) => {
+            if (progressCallback) {
+                const percent = Math.min(99, Math.round(progress * 100));
+                progressCallback(`Compressing ${percent}%`);
+            }
+        });
+
+        await ffmpegInstance.writeFile(inputName, await fetchFile(file));
+
+        // Compress to 720p H.264 with AAC audio
+        await ffmpegInstance.exec([
+            '-i', inputName,
+            '-vf', "scale='min(720,iw)':-2",
+            '-vcodec', 'libx264',
+            '-crf', '28',
+            '-preset', 'ultrafast',
+            '-acodec', 'aac',
+            '-b:a', '128k',
+            outputName
+        ]);
+
+        const data = await ffmpegInstance.readFile(outputName);
+        const compressedBlob = new Blob([data.buffer], { type: 'video/mp4' });
+        const compressedFilename = file.name.substring(0, file.name.lastIndexOf('.')) + '_compressed.mp4';
+        
+        // Cleanup virtual file system
+        await ffmpegInstance.deleteFile(inputName);
+        await ffmpegInstance.deleteFile(outputName);
+
+        return new File([compressedBlob], compressedFilename, {
+            type: 'video/mp4',
+            lastModified: Date.now()
+        });
+    } catch (err) {
+        console.error("FFmpeg compression error, falling back to original file:", err);
+        return file;
+    }
+}
 
 // Secure upload helper to proxy files to R2 via Cloudflare Worker ฟังก์ชันช่วยส่งรูปภาพผ่าน Worker ไปเก็บที่ R2 Storage อย่างปลอดภัย
 async function uploadFileToR2(rawFile, type = 'post', progressCallback) {
@@ -66,6 +139,17 @@ async function uploadFileToR2(rawFile, type = 'post', progressCallback) {
         } catch (e) {
             console.warn("Image compression failed, uploading original:", e);
         }
+    } else if (rawFile.type.startsWith('video/')) {
+        try {
+            file = await compressVideo(rawFile, (statusText) => {
+                if (progressCallback && typeof statusText === 'string') {
+                    // Pass status string back to button text handler
+                    progressCallback(statusText);
+                }
+            });
+        } catch (e) {
+            console.warn("Video compression failed, uploading original:", e);
+        }
     }
 
     const idToken = await currentUser.getIdToken();
@@ -79,7 +163,7 @@ async function uploadFileToR2(rawFile, type = 'post', progressCallback) {
         xhr.setRequestHeader('Content-Type', file.type || 'application/octet-stream');
         
         if (type === 'post') {
-            xhr.setRequestHeader('X-Filename', file.name);
+            xhr.setRequestHeader('X-Filename', encodeURIComponent(file.name));
         }
 
         if (progressCallback) {
@@ -292,8 +376,9 @@ window.addEventListener('DOMContentLoaded', () => {
                     showSection('post');
                 }
             } else {
-                // If logged in, fetch profile stats
-                loadProfileStats();
+                if (typeof loadProfileStats === 'function') {
+                    loadProfileStats();
+                }
             }
         });
     }
@@ -618,6 +703,14 @@ function openLightbox(postData) {
         ? `<button class="lightbox-nav-btn next-btn" aria-label="ภาพถัดไป"><i class="fa-solid fa-chevron-right"></i></button>`
         : '';
 
+    const isVideo = imageUrl.toLowerCase().endsWith('.mp4') || imageUrl.toLowerCase().endsWith('.webm');
+    
+    // Redirect videos clicked inside Gallery page to Shorts page
+    if (isVideo && postData && typeof postData === 'object' && postData.id) {
+        window.location.href = `shorts.html?post=${postData.id}`;
+        return;
+    }
+
     const lightbox = document.createElement('div');
     lightbox.id = 'miku-lightbox';
     lightbox.className = 'lightbox-overlay';
@@ -650,14 +743,8 @@ function openLightbox(postData) {
                         <button class="lightbox-icon-btn" aria-label="Comments">
                             <i class="fa-regular fa-comment"></i>
                         </button>
-                        <button class="lightbox-icon-btn" aria-label="More actions">
-                            <i class="fa-solid fa-ellipsis"></i>
-                        </button>
                     </div>
                     <div class="lightbox-right-actions">
-                        <button class="lightbox-profile-btn">
-                            โปรไฟล์ <i class="fa-solid fa-chevron-down" style="font-size: 10px;"></i>
-                        </button>
                         ${saveBtnHtml}
                     </div>
                 </div>
@@ -684,7 +771,7 @@ function openLightbox(postData) {
                     </div>
                 </div>
                 
-                <div class="comment-reply-context-banner" id="comment-reply-context-banner" style="display: none; justify-content: space-between; align-items: center; background: rgba(76, 184, 184, 0.15); border-left: 4px solid var(--primary-cyan); padding: 8px 12px; margin-bottom: 8px; border-radius: 8px; font-size: 13px; font-family: var(--font-primary), sans-serif;">
+                <div class="comment-reply-context-banner" id="comment-reply-context-banner" style="display: none; justify-content: space-between; align-items: center; background: rgba(76, 184, 184, 0.15); border-left: 4px solid var(--primary-cyan); padding: 8px 12px; margin-bottom: 8px; border-radius: 8px; font-size: 13px;">
                     <span style="color: #333;">กำลังตอบกลับคุณ <strong id="reply-to-username-label" style="color: var(--primary-cyan);"></strong></span>
                     <button type="button" id="btn-cancel-comment-reply" style="background: none; border: none; color: var(--accent-pink-contrast); cursor: pointer; padding: 2px; font-size: 14px;"><i class="fa-solid fa-xmark"></i></button>
                 </div>
@@ -1255,7 +1342,7 @@ function getColumnCount() {
     const width = window.innerWidth;
     if (width > 1200) return 4;
     if (width > 768) return 3;
-    return 2;
+    return 1;
 }
 
 function initMasonryColumns(grid, numCols) {
@@ -1350,15 +1437,6 @@ function showSection(sectionId) {
         window.location.href = 'index.html';
         return;
     } else if (sectionId === 'post') {
-        // Auth Guard Check
-        if (typeof firebase !== 'undefined') {
-            const currentUser = firebase.auth().currentUser;
-            if (!currentUser) {
-                openAuthModal('login');
-                displayAuthAlert('Please log in to view and post photos in the gallery.', 'error');
-                return;
-            }
-        }
         if (postSection) postSection.style.display = 'block';
         if (navPost) navPost.classList.add('active');
         // Reset query pagination and load posts
@@ -1390,8 +1468,9 @@ function showSection(sectionId) {
         const profileEditCard = document.getElementById('profile-edit-card');
         if (profileEditCard) profileEditCard.style.display = 'none';
         
-        // Load stats and settings form values
-        loadProfileStats();
+        if (typeof loadProfileStats === 'function') {
+            loadProfileStats();
+        }
         // Load user's uploaded gallery posts inside profile
         if (typeof loadProfilePosts === 'function') {
             loadProfilePosts();
@@ -1412,22 +1491,33 @@ function handleFileSelect(file) {
     const postFileInput = document.getElementById('post-file');
     const previewContainer = document.getElementById('dropzone-preview-container');
     const previewImg = document.getElementById('dropzone-preview-img');
+    const previewVideo = document.getElementById('dropzone-preview-video');
     const dropzoneContent = document.querySelector('.dropzone-content');
     
-    // Check file size (5MB limit)
-    if (file.size > 10 * 1024 * 1024) {
-        showMikuToast("File is too large. Max size limit is 10MB.", "error");
-        if (postFileInput) postFileInput.value = '';
-        return;
-    }
-    
-    const reader = new FileReader();
-    reader.onload = function(e) {
-        if (previewImg) previewImg.src = e.target.result;
+    if (file.type.startsWith('video/')) {
+        if (previewImg) previewImg.style.display = 'none';
+        if (previewVideo) {
+            previewVideo.src = URL.createObjectURL(file);
+            previewVideo.style.display = 'block';
+        }
         if (previewContainer) previewContainer.style.display = 'flex';
         if (dropzoneContent) dropzoneContent.style.display = 'none';
-    };
-    reader.readAsDataURL(file);
+    } else {
+        if (previewVideo) {
+            previewVideo.style.display = 'none';
+            previewVideo.src = '';
+        }
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            if (previewImg) {
+                previewImg.src = e.target.result;
+                previewImg.style.display = 'block';
+            }
+            if (previewContainer) previewContainer.style.display = 'flex';
+            if (dropzoneContent) dropzoneContent.style.display = 'none';
+        };
+        reader.readAsDataURL(file);
+    }
 }
 
 async function handlePostSubmit(event) {
@@ -1459,7 +1549,7 @@ async function handlePostSubmit(event) {
     const progressBar = document.getElementById('upload-progress-bar');
     
     if (!file) {
-        showMikuToast("Please select a photo first.", "error");
+        showMikuToast("Please select a file first.", "error");
         return;
     }
     
@@ -1473,21 +1563,25 @@ async function handlePostSubmit(event) {
         submitBtn.disabled = true;
         const playText = submitBtn.querySelector('.play');
         if (playText) {
-            playText.innerHTML = `<i class="fa-solid fa-circle-notch fa-spin" style="margin-right: 6px;"></i> Uploading 0%...`;
+            playText.innerHTML = `<i class="fa-solid fa-circle-notch fa-spin" style="margin-right: 6px;"></i> Processing...`;
         }
     }
     if (progressContainer) progressContainer.style.display = 'block';
     if (progressBar) progressBar.style.width = '0%';
     
     try {
-        const imageUrl = await uploadFileToR2(file, 'post', (percent) => {
+        const imageUrl = await uploadFileToR2(file, 'post', (progress) => {
             if (submitBtn) {
                 const playText = submitBtn.querySelector('.play');
                 if (playText) {
-                    playText.innerHTML = `<i class="fa-solid fa-circle-notch fa-spin" style="margin-right: 6px;"></i> Uploading ${percent}%...`;
+                    if (typeof progress === 'number') {
+                        playText.innerHTML = `<i class="fa-solid fa-circle-notch fa-spin" style="margin-right: 6px;"></i> Uploading ${progress}%...`;
+                        if (progressBar) progressBar.style.width = `${progress}%`;
+                    } else {
+                        playText.innerHTML = `<i class="fa-solid fa-circle-notch fa-spin" style="margin-right: 6px;"></i> ${progress}`;
+                    }
                 }
             }
-            if (progressBar) progressBar.style.width = `${percent}%`;
         });
         
         // Save metadata to Cloudflare D1 Database via Cloudflare Worker
@@ -1518,13 +1612,18 @@ async function handlePostSubmit(event) {
         
         // Reset form and refresh
         document.getElementById('post-form').reset();
+        const previewVideo = document.getElementById('dropzone-preview-video');
+        if (previewVideo) {
+            previewVideo.src = '';
+            previewVideo.style.display = 'none';
+        }
         if (previewContainer) previewContainer.style.display = 'none';
         if (dropzoneContent) dropzoneContent.style.display = 'flex';
         if (progressContainer) progressContainer.style.display = 'none';
         
         // Redirect to gallery view (which automatically triggers loadPosts)
         showSection('post');
-        showMikuToast("Photo posted successfully!", "success");
+        showMikuToast("Post created successfully!", "success");
         
     } catch (err) {
         console.error("Upload error details:", err);
@@ -1713,6 +1812,18 @@ async function loadPosts(append = false) {
             const likedClass = liked ? 'liked' : '';
             const heartIcon = liked ? 'fa-solid fa-heart' : 'fa-regular fa-heart';
             const likedLabel = liked ? 'Unlike photo' : 'Like photo';
+
+            const isVideo = escapedImageUrl.toLowerCase().endsWith('.mp4') || escapedImageUrl.toLowerCase().endsWith('.webm');
+            let mediaHtml = '';
+            if (isVideo) {
+                mediaHtml = `
+                    <video src="${escapedImageUrl}" data-src="${escapedImageUrl}" class="post-card-img" style="width: 100%; border-radius: 0.8em;" controls loop muted playsinline></video>
+                `;
+            } else {
+                mediaHtml = `
+                    <img src="${escapedImageUrl}" data-src="${escapedImageUrl}" alt="Uploaded Post Photo" class="post-card-img" onerror="this.src='assets/logo_02.webp'" loading="lazy">
+                `;
+            }
             
             card.innerHTML = `
                 <div class="card-header">
@@ -1720,7 +1831,7 @@ async function loadPosts(append = false) {
                     <span class="card-username">${escapedAuthorName}</span>
                 </div>
                 <div class="post-card-img-wrapper">
-                    <img src="${escapedImageUrl}" data-src="${escapedImageUrl}" alt="Uploaded Post Photo" class="post-card-img" onerror="this.src='assets/logo_02.webp'" loading="lazy">
+                    ${mediaHtml}
                 </div>
                 <p class="card-caption">${escapeHtml(data.caption)}</p>
                 <div class="card-actions">
@@ -1735,30 +1846,30 @@ async function loadPosts(append = false) {
                 </div>
             `;
             
-            // Image loaded smooth fade-in observer & height-locking for virtualization stability
-            const img = card.querySelector('.post-card-img');
-            if (img) {
-                img.onload = () => {
-                    // Only lock height if the loaded image is indeed the real image (not the spacer)
-                    if (img.src && !img.src.startsWith('data:image/gif')) {
-                        img.classList.add('loaded');
+            // Media loaded smooth fade-in observer & height-locking for virtualization stability
+            const mediaEl = card.querySelector('.post-card-img');
+            if (mediaEl) {
+                const onMediaLoaded = () => {
+                    const src = mediaEl.src || mediaEl.currentSrc;
+                    if (src && !src.startsWith('data:image/gif')) {
+                        mediaEl.classList.add('loaded');
                         const wrapper = card.querySelector('.post-card-img-wrapper');
-                        
-                        // If this image wrapper already has a locked height, it means it has loaded once
-                        // and layoutMasonry has aligned it. Avoid triggering a rebuild on virtualization swaps!
-                        if (wrapper && wrapper.style.height) {
-                            return;
-                        }
-                        
+                        if (wrapper && wrapper.style.height) return;
                         if (wrapper) {
                             wrapper.style.height = `${wrapper.offsetHeight}px`;
                         }
-                        // ปรับจัดหน้าตาคอลัมน์ใหม่หลังจากที่รูปภาพโหลดขนาดจริงเสร็จสิ้นเพื่อคุมความบาลานซ์
                         layoutMasonry(true);
                     }
                 };
-                if (img.complete && img.src && !img.src.startsWith('data:image/gif')) {
-                    img.classList.add('loaded');
+
+                if (isVideo) {
+                    mediaEl.onloadeddata = onMediaLoaded;
+                    if (mediaEl.readyState >= 2) onMediaLoaded();
+                } else {
+                    mediaEl.onload = onMediaLoaded;
+                    if (mediaEl.complete && mediaEl.src && !mediaEl.src.startsWith('data:image/gif')) {
+                        onMediaLoaded();
+                    }
                 }
             }
             
