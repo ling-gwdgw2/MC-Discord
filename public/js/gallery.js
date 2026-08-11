@@ -1722,25 +1722,31 @@ async function loadPosts(append = false) {
         lastVisiblePost = null;
         loadedPostsList = [];
         
-        const numCols = getColumnCount();
-        currentColumnsCount = numCols;
-        const cols = initMasonryColumns(grid, numCols);
-        
-        // Show 6 shimmer skeleton cards inside the grid layout initially to prevent CLS
-        const skeletonHeights = ['height-sm', '', 'height-lg', '', 'height-sm', 'height-lg'];
-        for (let i = 0; i < 6; i++) {
-            const hClass = skeletonHeights[i];
-            const skeletonCard = document.createElement('div');
-            skeletonCard.className = 'post-card loading-skeleton-temp';
-            skeletonCard.innerHTML = `
-                <div class="skeleton-card" style="margin-bottom: 0; border: none; box-shadow: none; padding: 0;">
-                    <div class="skeleton-img ${hClass}"></div>
-                    <div class="skeleton-text short"></div>
-                    <div class="skeleton-text long"></div>
-                </div>
-            `;
-            const shortestCol = getShortestColumn(cols);
-            shortestCol.appendChild(skeletonCard);
+        const existingCards = grid.querySelectorAll('.post-card:not(.loading-skeleton-temp)');
+        if (existingCards.length > 0) {
+            grid.style.transition = 'opacity 0.2s ease';
+            grid.style.opacity = '0.65';
+        } else {
+            const numCols = getColumnCount();
+            currentColumnsCount = numCols;
+            const cols = initMasonryColumns(grid, numCols);
+            
+            // Show 6 shimmer skeleton cards inside the grid layout initially to prevent CLS
+            const skeletonHeights = ['height-sm', '', 'height-lg', '', 'height-sm', 'height-lg'];
+            for (let i = 0; i < 6; i++) {
+                const hClass = skeletonHeights[i];
+                const skeletonCard = document.createElement('div');
+                skeletonCard.className = 'post-card loading-skeleton-temp';
+                skeletonCard.innerHTML = `
+                    <div class="skeleton-card" style="margin-bottom: 0; border: none; box-shadow: none; padding: 0;">
+                        <div class="skeleton-img ${hClass}"></div>
+                        <div class="skeleton-text short"></div>
+                        <div class="skeleton-text long"></div>
+                    </div>
+                `;
+                const shortestCol = getShortestColumn(cols);
+                shortestCol.appendChild(skeletonCard);
+            }
         }
     } else {
         // Append 3 shimmer skeleton cards at the bottom of the grid layout while loading next page
@@ -1794,9 +1800,17 @@ async function loadPosts(append = false) {
         const resData = await res.json();
         const posts = resData.posts || [];
         
+        // If refreshing/filtering, clear grid now that data is ready
+        if (!append) {
+            const numCols = getColumnCount();
+            currentColumnsCount = numCols;
+            initMasonryColumns(grid, numCols);
+        }
+
         // Clean up any dynamic skeletons before inserting loaded posts
         grid.querySelectorAll('.loading-skeleton-temp').forEach(el => el.remove());
         if (loader) loader.style.display = 'none';
+        grid.style.opacity = '1';
         
         // Append or set loaded list
         if (append) {
@@ -1830,6 +1844,7 @@ async function loadPosts(append = false) {
         if (posts.length === 0 && !append) {
             if (emptyState) emptyState.style.display = 'flex';
             if (loadMoreContainer) loadMoreContainer.style.display = 'none';
+            grid.style.opacity = '1';
             return;
         }
         
