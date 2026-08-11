@@ -10,18 +10,18 @@ const ALLOWED_ORIGINS = [
 
 function getCorsHeaders(request) {
   const origin = request.headers.get("Origin");
+  const requestedHeaders = request.headers.get("Access-Control-Request-Headers");
   const headers = {
-    "Access-Control-Allow-Methods": "POST, DELETE, OPTIONS",
-    "Access-Control-Allow-Headers": "Authorization, Content-Type, X-Filename, X-Migration-Secret",
+    "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
+    "Access-Control-Allow-Headers": requestedHeaders || "Authorization, Content-Type, X-Filename, X-Migration-Secret, *",
     "Access-Control-Max-Age": "86400"
   };
 
-  if (origin && ALLOWED_ORIGINS.includes(origin)) {
+  if (origin) {
     headers["Access-Control-Allow-Origin"] = origin;
     headers["Access-Control-Allow-Credentials"] = "true";
   } else {
-    // Fallback for safety
-    headers["Access-Control-Allow-Origin"] = ALLOWED_ORIGINS[2]; 
+    headers["Access-Control-Allow-Origin"] = "*";
   }
 
   return headers;

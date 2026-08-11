@@ -178,6 +178,8 @@ async function uploadFileToR2(rawFile, type = 'post', progressCallback) {
             };
         }
 
+        xhr.timeout = 180000; // 3 minutes timeout for video/media uploads
+
         xhr.onload = () => {
             if (xhr.status >= 200 && xhr.status < 300) {
                 try {
@@ -196,15 +198,18 @@ async function uploadFileToR2(rawFile, type = 'post', progressCallback) {
             }
         };
 
-        xhr.onerror = () => {
-            reject(new Error("Network error during file upload."));
+        xhr.onerror = (e) => {
+            console.error("XHR network upload error:", e, xhr);
+            reject(new Error("Network error during file upload. Please check your network connection or CORS configuration."));
         };
 
-        const reader = new FileReader();
-        reader.onload = () => {
-            xhr.send(reader.result);
+        xhr.ontimeout = () => {
+            console.error("XHR upload timed out after 180s");
+            reject(new Error("Upload request timed out. Please try uploading a smaller file or checking your connection speed."));
         };
-        reader.readAsArrayBuffer(file);
+
+        // Send File/Blob directly without loading whole file into V8 ArrayBuffer heap
+        xhr.send(file);
     });
 }
 
