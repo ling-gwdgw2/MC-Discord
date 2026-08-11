@@ -117,6 +117,12 @@ async function compressVideo(file, progressCallback) {
         return file;
     }
 
+    // For videos larger than 20MB, skip browser WASM encoding to prevent CPU freeze & tab memory crash
+    if (file.size > 20 * 1024 * 1024) {
+        console.info("Video file >20MB, bypassing browser WASM encoding for instant stream upload.");
+        return file;
+    }
+
     const hasFFmpeg = typeof window.FFmpegWASM !== 'undefined' || typeof window.FFmpeg !== 'undefined';
     const hasFFmpegUtil = typeof window.FFmpegUtil !== 'undefined';
 
